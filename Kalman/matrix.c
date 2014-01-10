@@ -22,7 +22,7 @@ void matrix_init(matrix_t *mat, uint_fast8_t rows, uint_fast8_t cols, matrix_dat
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_invert_lower(const matrix_t *const lower, matrix_t* inverse)
+void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRICT  inverse)
 {
     int_fast8_t i, j, k;
     const uint_fast8_t n = lower->rows;

@@ -42,8 +42,7 @@ int cholesky_decompose_lower(matrix_t* mat)
             if( i == j ) 
             {
                 // is it positive-definite?
-                if( sum <= 0.0 )
-                    return 1;
+                if( sum <= 0.0 ) return 1;
 
                 el_ii = (matrix_data_t)sqrt(sum);
                 t[i*n+i] = el_ii;
@@ -57,8 +56,10 @@ int cholesky_decompose_lower(matrix_t* mat)
     }
 
     // zero the top right corner.
-    for( i = 0; i < n; ++i ) {
-        for( j = i+1; j < n; ++j ) {
+    for( i = 0; i < n; ++i ) 
+    {
+        for( j = i+1; j < n; ++j ) 
+        {
             t[i*n+j] = 0.0;
         }
     }

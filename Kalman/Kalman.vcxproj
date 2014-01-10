@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cholesky.h" />
+    <ClInclude Include="compiler.h" />
     <ClInclude Include="matrix.h" />
   </ItemGroup>
   <ItemGroup>

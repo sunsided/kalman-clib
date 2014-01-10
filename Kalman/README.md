@@ -1,6 +1,6 @@
 # Kalman Filter C Implementation #
 
-Rather naive Kalman filter implementation in pure C.
+Rather naive Kalman filter implementation in pure C using code ported from the [Efficient Java Matrix Library](https://code.google.com/p/efficient-java-matrix-library).
 
 ## Implemented so far ##
 * Matrix inverse using Cholesky decomposition

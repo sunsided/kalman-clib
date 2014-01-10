@@ -18,23 +18,17 @@ void main()
                             0, 0, 0};
 
     // prepare matrix structures
-    matrix_t m, im;
+    matrix_t m, mi;
 
-    // original and decomposed matrix
-    m.cols = 3;
-    m.rows = 3;
-    m.data = d;
-
-    // inverted matrix
-    im.cols = 3;
-    im.rows = 3;
-    im.data = di;
+    // initialize the matrices
+    matrix_init(&m, 3, 3, d);
+    matrix_init(&mi, 3, 3, di);
 
     // decompose matrix to lower triangular
     result = cholesky_decompose_lower(&m);
 
     // invert matrix using lower triangular
-    matrix_invert_lower(&m, &im);
+    matrix_invert_lower(&m, &mi);
 
     while (1) {};
 }

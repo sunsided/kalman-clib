@@ -5,7 +5,7 @@
 
 /**
 * \brief Decomposes a matrix into lower triangular form using Cholesky decomposition.
-* \param[inout] mat The matrix to decompose in place into a lower triangular matrix.
+* \param[in] mat The matrix to decompose in place into a lower triangular matrix.
 * \return Zero in case of success, nonzero if the matrix is not positive semi-definite.
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library

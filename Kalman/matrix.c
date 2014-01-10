@@ -2,6 +2,20 @@
 #include "matrix.h"
 
 /**
+* \brief Initializes a matrix structure.
+* \param[in] mat The matrix to initialize
+* \param[in] rows The number of rows
+* \param[in] cols The number of columns
+* \param[in] buffer The data buffer (of size {\see rows} x {\see cols}).
+*/
+void matrix_init(matrix_t *mat, uint_fast8_t rows, uint_fast8_t cols, matrix_data_t *buffer)
+{
+    mat->cols = 3;
+    mat->rows = 3;
+    mat->data = buffer;
+}
+
+/**
 * \brief Inverts a lower triangular matrix.
 * \param[in] lower The lower triangular matrix to be inverted.
 * \param[out] inverse The inverse of the lower triangular matrix.

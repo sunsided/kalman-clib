@@ -29,9 +29,18 @@ typedef struct {
 } matrix_t;
 
 /**
+* \brief Initializes a matrix structure.
+* \param[in] mat The matrix to initialize
+* \param[in] rows The number of rows
+* \param[in] cols The number of columns
+* \param[in] buffer The data buffer (of size {\see rows} x {\see cols}).
+*/
+void matrix_init(matrix_t *mat, uint_fast8_t rows, uint_fast8_t cols, matrix_data_t *buffer);
+
+/**
 * \brief Inverts a lower triangular matrix.
 * \param[in] lower The lower triangular matrix to be inverted.
-* \param[out] inverse The inverse of the lower triangular matrix.
+* \param[in] inverse The calculated inverse of the lower triangular matrix.
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */

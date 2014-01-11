@@ -24,6 +24,9 @@
     <ClCompile Include="matrix.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="kalman.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="matrix.h">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="compiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kalman.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

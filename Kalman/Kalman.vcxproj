@@ -65,12 +65,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cholesky.c" />
+    <ClCompile Include="kalman.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="matrix.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cholesky.h" />
     <ClInclude Include="compiler.h" />
+    <ClInclude Include="kalman.h" />
     <ClInclude Include="matrix.h" />
   </ItemGroup>
   <ItemGroup>

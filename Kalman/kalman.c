@@ -79,18 +79,18 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
     /* P = A*P*A' * 1/lambda^2 + B*Q*B'                                     */
     /************************************************************************/
 
-    // 1/lambda^2
+    // lambda = 1/lambda^2
     lambda = (matrix_data_t)1.0 / (lambda * lambda);
 
     // P = A*P*A'
     matrix_mult(A, P, &temp, &aux);                 // temp = A*P
-    matrix_multscale_transb(&temp, A, lambda, P);   // P = temp*A'
+    matrix_multscale_transb(&temp, A, lambda, P);   // P = temp*A' * 1/(lambda^2)
 
     // P = P + B*Q*B'
     if (kf->B.rows > 0)
     {
-        matrix_mult(B, &kf->Q, &temp, &aux); // temp = B*Q
-        matrix_multadd_transb(&temp, B, P);  // P = P + temp*A'
+        matrix_mult(B, &kf->Q, &temp, &aux);        // temp = B*Q
+        matrix_multadd_transb(&temp, B, P);         // P += temp*B'
     }
 }
 

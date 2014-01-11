@@ -1,5 +1,5 @@
-/**
-/* \brief Initializes a named Kalman filter measurement structure.
+/*!
+* \brief Initializes a named Kalman filter measurement structure.
 *
 * This include requires the two defines {\ref KALMAN_MEASUREMENT_NAME} and {\ref KALMAN_NUM_MEASUREMENTS}
 * to be set to the base name of the Kalman Filter measurement and to the number of measured outputs,

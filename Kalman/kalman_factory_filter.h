@@ -1,5 +1,5 @@
-/**
-/* \brief Initializes a named Kalman filter structure.
+/*!
+* \brief Initializes a named Kalman filter structure.
 *
 * This include requires the three defines {\ref KALMAN_NAME}, {\ref KALMAN_NUM_STATES} and
 * {\ref KALMAN_NUM_INPUTS} to be set to the base name of the Kalman Filter and to the number 

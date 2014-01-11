@@ -1,3 +1,6 @@
+#include <stdint.h>
+#include <assert.h>
+
 #define EXTERN_INLINE_KALMAN INLINE
 #include "kalman.h"
 
@@ -58,13 +61,15 @@ void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_s
 */
 void kalman_predict(kalman_t *kf, matrix_data_t lambda)
 {
-    matrix_t xpredicted;
-    matrix_t temp;
+    // TODO: need those fields in the structure!
+    assert(0);
+    matrix_t xpredicted; // xpredicted and aux max use the same backing field
     matrix_data_t aux;
+    matrix_t temp;
     
-    const matrix_t *const A = &kf->A;
-    const matrix_t *const B = &kf->B;
-    const matrix_t * P = &kf->P;
+    const matrix_t *RESTRICT const A = &kf->A;
+    const matrix_t *RESTRICT const B = &kf->B;
+    const matrix_t *RESTRICT P = &kf->P;
 
     /************************************************************************/
     /* Predict next state using system dynamics                             */
@@ -73,6 +78,7 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
 
     // x = A*x
     matrix_mult_vector(A, &kf->x, &xpredicted);
+    matrix_copy(&xpredicted, &kf->x);
 
     /************************************************************************/
     /* Predict next covariance using system dynamics and input              */
@@ -80,7 +86,7 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
     /************************************************************************/
 
     // lambda = 1/lambda^2
-    lambda = (matrix_data_t)1.0 / (lambda * lambda);
+    lambda = (matrix_data_t)1.0 / (lambda * lambda); // TODO: This should be precalculated, e.g. using kalman_set_lambda(...);
 
     // P = A*P*A'
     matrix_mult(A, P, &temp, &aux);                 // temp = A*P

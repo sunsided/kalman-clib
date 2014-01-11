@@ -192,5 +192,25 @@ EXTERN_INLINE_MATRIX void matrix_get_row_copy(const matrix_t *const mat, const r
     }
 }
 
+/*!
+* \brief Copies the matrix from {\ref mat} to {\ref target}
+* \param[in] mat The matrix to copy
+* \param[in] target The matrix to copy to
+*/
+EXTERN_INLINE_MATRIX void matrix_copy(const matrix_t *const mat, const matrix_t *const target) PURE
+{
+    register const uint_fast16_t count = mat->cols * mat->rows;
+    register int_fast16_t index = 0;
+
+    matrix_data_t *RESTRICT const A = mat->data;
+    matrix_data_t *RESTRICT const B = target->data;
+
+    // fetch data
+    for (index = count - 1; index >= 0; --index)
+    {
+        B[index] = A[index];
+    }
+}
+
 #undef EXTERN_INLINE_MATRIX
 #endif

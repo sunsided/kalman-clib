@@ -1,3 +1,61 @@
+/**
+/* \brief Initializes a named Kalman filter structure.
+*
+* This include requires the three defines {\ref KALMAN_NAME}, {\ref KALMAN_NUM_STATES} and
+* {\ref KALMAN_NUM_INPUTS} to be set to the base name of the Kalman Filter and to the number 
+* of states and inputs respectively.
+*
+* It then will instantiate the buffers required for A, P, x as well as B, Q and u if the number
+* of inputs is greater than zero, as well as the structure for the Kalman filter and the
+* initialization method.
+*
+* Suppose the Kalman filter shall be named "acceleration", has three states and zero inputs.
+* You would start by defining the required macros
+*
+* \code{.c}
+* #define KALMAN_NAME acceleration
+* #define KALMAN_NUM_STATES 3
+* #define KALMAN_NUM_INPUTS 0
+* \endcode
+*
+* After that, this file must be included
+*
+* \code{.c}
+* #include "kalman_factory_init.h"
+* \endcode
+*
+* At this point, the structure \c kalman_filter_acceleration will be created (statically) along with
+* all the required buffers (\c kalman_filter_acceleration_A_buffer, etc.) and the matrices
+* will be set with the correct dimensions.
+*
+* In addition, a parameterless static initialization function kalman_filter_acceleration_init() will
+* be created which you will need to call manually.
+*
+* To clean up the defined macros (e.g. in order to be able to create another named Kalman filter),
+* you will have to include kalman_factory_cleanup.h:
+*
+* \code{.c}
+* #include "kalman_factory_cleanup.h"
+* \endcode
+*
+* A full example would be
+
+* \code{.c}
+* #define KALMAN_NAME example
+* #define KALMAN_NUM_STATES 4
+* #define KALMAN_NUM_INPUTS 0
+
+* #include "kalman_factory_init.h"
+* #include "kalman_factory_cleanup.h"
+
+* void test_kalman()
+* {
+*   kalman_filter_example_init();
+*   kalman_filter_example.x.data[0] = 1;
+* }
+* \endcode
+*/
+
 /************************************************************************/
 /* Check for inputs                                                     */
 /************************************************************************/
@@ -102,47 +160,3 @@ STATIC_INLINE KALMAN_FUNCTION_NAME(init)()
     kalman_initialize(&KALMAN_STRUCT_NAME, KALMAN_NUM_STATES, KALMAN_NUM_INPUTS, __KALMAN_BUFFER_A, __KALMAN_BUFFER_x, __KALMAN_BUFFER_B, __KALMAN_BUFFER_u, __KALMAN_BUFFER_P, __KALMAN_BUFFER_Q);
 }
 
-/************************************************************************/
-/* Clean up                                                             */
-/************************************************************************/
-
-// remove x macros
-#undef __KALMAN_x_ROWS
-#undef __KALMAN_x_COLS
-#undef __KALMAN_BUFFER_x
-
-// remove u macros
-#undef __KALMAN_u_ROWS
-#undef __KALMAN_u_COLS
-#undef __KALMAN_BUFFER_u
-
-// remove A macros
-#undef __KALMAN_A_ROWS
-#undef __KALMAN_A_COLS
-#undef __KALMAN_BUFFER_A
-
-// remove P macros
-#undef __KALMAN_P_ROWS
-#undef __KALMAN_P_COLS
-#undef __KALMAN_BUFFER_P
-
-// remove B macros
-#undef __KALMAN_B_ROWS
-#undef __KALMAN_B_COLS
-#undef __KALMAN_BUFFER_B
-
-// remove Q macros
-#undef __KALMAN_Q_ROWS
-#undef __KALMAN_Q_COLS
-#undef __KALMAN_BUFFER_Q
-
-// remove name helper macros
-#undef KALMAN_BASENAME_HELPER
-#undef KALMAN_FILTER_BASENAME
-#undef KALMAN_FILTER_BASENAME_HELPER
-#undef __CONCAT
-
-// remove name macros
-#undef KALMAN_STRUCT_NAME
-#undef KALMAN_FUNCTION_NAME
-#undef KALMAN_BUFFER_NAME

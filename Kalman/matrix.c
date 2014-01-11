@@ -75,7 +75,7 @@ void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRIC
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c, matrix_data_t *baux)
+void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c, matrix_data_t *baux)
 {
     register int_fast16_t i, j, k;
     const uint_fast8_t bcols = b->cols;
@@ -127,7 +127,7 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c)
+void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c)
 {
     register uint_fast16_t xA, xB, indexA, indexB, end;
     const uint_fast8_t bcols = b->cols;
@@ -171,7 +171,7 @@ void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const 
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c)
+void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c)
 {
     register uint_fast16_t xA, xB, indexA, indexB, end;
     const uint_fast8_t bcols = b->cols;
@@ -215,7 +215,7 @@ void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, con
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, register const matrix_data_t scale, const matrix_t *RESTRICT const c)
+void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, register const matrix_data_t scale, const matrix_t *RESTRICT c)
 {
     register uint_fast16_t xA, xB, indexA, indexB, end;
     const uint_fast8_t bcols = b->cols;
@@ -259,7 +259,7 @@ void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, r
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT const c)
+void matrix_mult_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT c)
 {
     const uint_fast8_t arows = a->rows;
     const uint_fast8_t acols = a->cols;
@@ -282,5 +282,40 @@ void matrix_mult_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRI
         }
 
         cdata[cIndex++] = total;
+    }
+}
+
+/*!
+* \brief Performs a matrix multiplication such that {\ref c} = {\ref c} + {\ref x} * {\ref b}
+* \param[in] a Matrix A
+* \param[in] x Vector x
+* \param[in] c Resulting vector C (will be added to)
+* \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+*
+* Kudos: https://code.google.com/p/efficient-java-matrix-library
+*/
+void matrix_multadd_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT c)
+{
+    const uint_fast8_t arows = a->rows;
+    const uint_fast8_t acols = a->cols;
+
+    matrix_data_t *RESTRICT const adata = a->data;
+    matrix_data_t *RESTRICT const xdata = x->data;
+    matrix_data_t *RESTRICT const cdata = c->data;
+
+    uint_fast16_t indexA = 0;
+    uint_fast16_t cIndex = 0;
+    matrix_data_t b0 = xdata[0];
+
+    for (int i = 0; i < arows; ++i)
+    {
+        matrix_data_t total = adata[indexA++] * b0;
+
+        for (int j = 1; j < acols; ++j)
+        {
+            total += adata[indexA++] * xdata[j];
+        }
+
+        cdata[cIndex++] += total;
     }
 }

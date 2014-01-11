@@ -63,7 +63,18 @@ void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRIC
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT const c) PURE HOT;
+void matrix_mult_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT c) PURE HOT;
+
+/*!
+* \brief Performs a matrix multiplication such that {\ref c} = {\ref c} + {\ref x} * {\ref b}
+* \param[in] a Matrix A
+* \param[in] x Vector x
+* \param[in] c Resulting vector C (will be added to)
+* \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+*
+* Kudos: https://code.google.com/p/efficient-java-matrix-library
+*/
+void matrix_multadd_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT c) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
@@ -74,7 +85,7 @@ void matrix_mult_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRI
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c, matrix_data_t *baux) PURE HOT;
+void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c, matrix_data_t *baux) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication with transposed B such that {\ref c} = {\ref a} * {\ref b'}
@@ -84,7 +95,7 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c) PURE HOT;
+void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication with transposed B and adds the result to {\ref c} such that {\ref c} = {\ref c} + {\ref a} * {\ref b'}
@@ -94,7 +105,7 @@ void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const 
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c) PURE HOT;
+void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication with transposed B and scales the result such that {\ref c} = {\ref a} * {\ref b'} * {\ref scale}
@@ -105,7 +116,7 @@ void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, con
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, register const matrix_data_t scale, const matrix_t *RESTRICT const c) PURE HOT;
+void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, register const matrix_data_t scale, const matrix_t *RESTRICT c) PURE HOT;
 
 /*!
 * \brief Gets a matrix element
@@ -209,6 +220,68 @@ EXTERN_INLINE_MATRIX void matrix_copy(const matrix_t *const mat, const matrix_t 
     for (index = count - 1; index >= 0; --index)
     {
         B[index] = A[index];
+    }
+}
+
+/*!
+* \brief Subtracts two matrices, using {\ref c} = {\ref a} - {\ref b}
+* \param[in] a The matrix to subtract from
+* \param[in] b The values to subtract
+* \param[in] c The output
+*/
+EXTERN_INLINE_MATRIX void matrix_sub(const matrix_t *const a, matrix_t *const b, const matrix_t *c) PURE
+{
+    register const uint_fast16_t count = a->cols * a->rows;
+    register int_fast16_t index = 0;
+
+    matrix_data_t *RESTRICT const A = a->data;
+    matrix_data_t *const B = b->data;
+    matrix_data_t *C = c->data;
+
+    // subtract data
+    for (index = count - 1; index >= 0; --index)
+    {
+        C[index] = A[index] - B[index];
+    }
+}
+
+/*!
+* \brief Subtracts two matrices in place, using {\ref b} = {\ref a} - {\ref b}
+* \param[in] a The matrix to subtract from
+* \param[in] b The values to subtract, also the output
+*/
+EXTERN_INLINE_MATRIX void matrix_sub_inplace(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT b) PURE
+{
+    register const uint_fast16_t count = a->cols * a->rows;
+    register int_fast16_t index = 0;
+
+    matrix_data_t *RESTRICT const A = a->data;
+    matrix_data_t *RESTRICT B = b->data;
+
+    // subtract data
+    for (index = count - 1; index >= 0; --index)
+    {
+        B[index] = A[index] - B[index];
+    }
+}
+
+/*!
+* \brief Adds two matrices in place, using {\ref b} = {\ref a} + {\ref b}
+* \param[in] a The values to add
+* \param[in] b The matrix to add to, also the output
+*/
+EXTERN_INLINE_MATRIX void matrix_add_inplace(const matrix_t *const a, const matrix_t *b) PURE
+{
+    register const uint_fast16_t count = a->cols * a->rows;
+    register int_fast16_t index = 0;
+
+    matrix_data_t *RESTRICT const A = a->data;
+    matrix_data_t *RESTRICT B = b->data;
+
+    // subtract data
+    for (index = count - 1; index >= 0; --index)
+    {
+        B[index] += A[index];
     }
 }
 

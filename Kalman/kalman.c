@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <assert.h>
 
+#include "cholesky.h"
+
 #define EXTERN_INLINE_KALMAN INLINE
 #include "kalman.h"
 
@@ -66,6 +68,7 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
     matrix_t xpredicted; // xpredicted and aux max use the same backing field
     matrix_data_t aux;
     matrix_t temp;
+    // temp needs to be at least size(P)
     
     const matrix_t *RESTRICT const A = &kf->A;
     const matrix_t *RESTRICT const B = &kf->B;
@@ -106,4 +109,62 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
 */
 void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
 {
+    // TODO: need those fields in the structure!
+    assert(0);
+    matrix_data_t aux;  // aux needs to be max(num_measurements, num_states)
+    matrix_t Sinv;      // Sinv needs to be at least size(S) --> num_measurements * num_measurements
+    matrix_t temp;      // temp needs to be max(num_measurements, num_states) * max(num_measurements, num_states)
+    matrix_t temp2;     // temp2 needs to be num_states * num_states
+
+    const matrix_t *RESTRICT P = &kf->P;
+    const matrix_t *RESTRICT const H = &kfm->H;
+    const matrix_t *RESTRICT K = &kfm->K;
+    const matrix_t *RESTRICT S = &kfm->S;
+    const matrix_t *y = &kfm->y;
+    const matrix_t *x = &kf->x;
+
+    /************************************************************************/
+    /* Calculate innovation and residual covariance                         */
+    /* y = z - H*x                                                          */
+    /* S = H*P*H' + R                                                       */
+    /************************************************************************/
+
+    // y = z - H*x
+    matrix_mult_vector(H, x, y);
+    matrix_sub_inplace(&kfm->z, y);
+
+    // S = H*P*H' + R
+    matrix_mult(H, P, &temp, &aux);    // temp = A*P
+    matrix_mult_transb(&temp, H, S);   // S = temp*A
+    matrix_add_inplace(&kfm->R, S);    // S += R
+
+    /************************************************************************/
+    /* Calculate Kalman gain                                                */
+    /* K = P*H' * S^-1                                                      */
+    /************************************************************************/
+
+    // K = P*H' * S^-1
+    cholesky_decompose_lower(S);
+    matrix_invert_lower(S, &Sinv);      // Sinv = S^-1
+    matrix_mult_transb(P, H, &temp);    // temp = P*H'
+    matrix_mult(&temp, &Sinv, K, &aux); // K = temp*Sinv
+
+    /************************************************************************/
+    /* Correct state prediction                                             */
+    /* x = x + K*y                                                          */
+    /************************************************************************/
+
+    // x = x + K*y 
+    matrix_multadd_vector(K, y, x);
+
+    /************************************************************************/
+    /* Correct state covariances                                            */
+    /* P = (I-K*H) * P                                                      */
+    /*   = P - K*(H*P)                                                      */
+    /************************************************************************/
+
+    // P = P - K*(H*P)
+    matrix_mult(H, P, &temp, &aux);         // temp = H*P
+    matrix_mult(K, &temp, &temp2, &aux);    // temp2 = K*temp
+    matrix_sub(P, &temp2, P);               // P -= temp2
 }

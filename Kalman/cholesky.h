@@ -10,6 +10,6 @@
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-int cholesky_decompose_lower(matrix_t* mat);
+int cholesky_decompose_lower(const matrix_t* mat);
 
 #endif

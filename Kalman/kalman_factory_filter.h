@@ -45,7 +45,7 @@
 * #define KALMAN_NUM_STATES 4
 * #define KALMAN_NUM_INPUTS 0
 
-* #include "kalman_factory_filter_init.h"
+* #include "kalman_factory_filter.h"
 * // NOTE that this is the point to create measurement buffers
 * #include "kalman_factory_cleanup.h"
 

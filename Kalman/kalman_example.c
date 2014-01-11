@@ -1,15 +1,16 @@
 
+// create the filter structure
 #define KALMAN_NAME example
 #define KALMAN_NUM_STATES 4
 #define KALMAN_NUM_INPUTS 0
+#include "kalman_factory_filter.h"
 
-#include "kalman_factory_filter_init.h"
-
+// create the measurement structure
 #define KALMAN_MEASUREMENT_NAME gyroscope
 #define KALMAN_NUM_MEASUREMENTS 3
+#include "kalman_factory_measurement.h"
 
-#include "kalman_factory_measurement_init.h"
-
+// clean up
 #include "kalman_factory_cleanup.h"
 
 void test_kalman()

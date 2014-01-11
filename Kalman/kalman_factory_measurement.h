@@ -1,3 +1,59 @@
+/**
+/* \brief Initializes a named Kalman filter measurement structure.
+*
+* This include requires the two defines {\ref KALMAN_MEASUREMENT_NAME} and {\ref KALMAN_NUM_MEASUREMENTS}
+* to be set to the base name of the Kalman Filter measurement and to the number of measured outputs,
+* as well as all defines from \ref {kalman_factory_filter.h}
+*
+* It then will instantiate the buffers required for H, R, z and all helper matrices and vectors, 
+* as well as the structure for the Kalman filter measurement and the initialization method.
+*
+* Suppose a Kalman filter named "direction" for which a measurement named "gyroscope" shall be crated 
+* which has three measured outputs. You would start by defining the required macros
+*
+* \code{.c}
+* #define KALMAN_MEASUREMENT_NAME gyroscope
+* #define KALMAN_NUM_MEASUREMENTS 3
+* \endcode
+*
+* After that, this file must be included
+*
+* \code{.c}
+* #include "kalman_factory_measurement.h"
+* \endcode
+*
+* At this point, the structure \c kalman_filter_direction_measurement_gyroscope will be created (statically) along with
+* all the required buffers (i.e. \c kalman_filter_direction_measurement_gyroscope_H_buffer, etc.) and the matrices
+* will be initialized and set with the correct dimensions.
+*
+* In addition, a parameterless static initialization function \code {kalman_filter_direction_measurement_gyroscope_init()} will
+* be created which you will need to call manually in order to set up the measurement.
+*
+* A full example would be
+
+* \code{.c}
+* #define KALMAN_NAME example
+* #define KALMAN_NUM_STATES 4
+* #define KALMAN_NUM_INPUTS 0
+* #include "kalman_factory_filter.h"
+*
+* #define KALMAN_MEASUREMENT_NAME gyroscope
+* #define KALMAN_NUM_MEASUREMENTS 3
+* #include "kalman_factory_measurement.h"
+
+* #include "kalman_factory_cleanup.h"
+
+* void test_kalman()
+* {
+*   kalman_filter_example_init();
+*   kalman_filter_example_measurement_gyroscope_init();
+*
+*   kalman_filter_example.x.data[0] = 1;
+*   kalman_filter_example_measurement_gyroscope.z.data[0] = 1;
+* }
+* \endcode
+*/
+
 /************************************************************************/
 /* Check for inputs                                                     */
 /************************************************************************/

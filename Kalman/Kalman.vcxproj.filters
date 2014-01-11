@@ -47,10 +47,10 @@
     <ClInclude Include="kalman_factory_cleanup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="kalman_factory_measurement_init.h">
+    <ClInclude Include="kalman_factory_filter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="kalman_factory_filter_init.h">
+    <ClInclude Include="kalman_factory_measurement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <assert.h>
 
 #define EXTERN_INLINE_MATRIX INLINE
 #include "matrix.h"
@@ -107,6 +108,51 @@ void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRIC
                 sum -= t[k*n+i]*a[j*n+k];
             }
             a[i*n+j] = a[j*n+i] = sum / el_ii;
+        }
+    }
+}
+
+/*!
+* \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
+* \param[in] a Matrix A
+* \param[in] b Matrix B
+* \param[in] c Resulting matrix C
+* \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+*/
+void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c, matrix_data_t *baux)
+{
+    uint_fast8_t i, j, k;
+
+    // assert pointer validity
+    assert(a != (matrix_t*)0);
+    assert(b != (matrix_t*)0);
+    assert(c != (matrix_t*)0);
+    assert(baux != (matrix_data_t*)0);
+    
+    // test dimensions of a and b
+    assert(a->cols == b->rows);
+    
+    // test dimension of c
+    assert(a->rows == c->rows);
+    assert(b->cols == c->cols);
+
+    for (j = 0; j < b->cols; j++) 
+    {
+        // create a copy of the column in B to avoid cache issues
+        for (k = 0; k < b->rows; k++) 
+        {
+            baux[k] = matrix_get(b, k, j);
+        }
+
+        int indexA = 0;
+        for (i = 0; i < a->rows; i++) 
+        {
+            matrix_data_t total = (matrix_data_t)0;
+            for (k = 0; k < b->rows;) 
+            {
+                total += a->data[indexA++]*baux[k++];
+            }
+            c->data[i*c->cols + j] = total;
         }
     }
 }

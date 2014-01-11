@@ -12,17 +12,17 @@
 */
 int cholesky_decompose_lower(matrix_t* mat)
 {
-    //assert(mat != (matrix_t*)0);
-    //assert(mat->rows == mat->cols);
-    //assert(mat->rows > 0);
-
     uint_fast8_t i, j;
     uint_fast8_t n = mat->rows;
     matrix_data_t *t = mat->data;
 
     matrix_data_t el_ii;
     matrix_data_t div_el_ii = 0;
-    
+
+    assert(mat != (matrix_t*)0);
+    assert(mat->rows == mat->cols);
+    assert(mat->rows > 0);
+
     for( i = 0; i < n; ++i ) 
     {
         for( j = i; j < n; ++j ) 

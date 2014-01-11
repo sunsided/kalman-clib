@@ -55,13 +55,22 @@ void matrix_init(matrix_t *mat, const uint_fast8_t rows, const uint_fast8_t cols
 void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRICT inverse);
 
 /*!
+* \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
+* \param[in] a Matrix A
+* \param[in] b Matrix B
+* \param[in] c Resulting matrix C
+* \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+*/
+void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c, matrix_data_t *baux);
+
+/*!
 * \brief Gets a matrix element
 * \param[in] mat The matrix to initialize
 * \param[in] rows The row
 * \param[in] cols The column
 * \return The value at the given cell.
 */
-EXTERN_INLINE_MATRIX matrix_data_t matrix_get(matrix_t *mat, const register uint_fast8_t row, const register uint_fast8_t column)
+EXTERN_INLINE_MATRIX matrix_data_t matrix_get(const matrix_t *const mat, const register uint_fast8_t row, const register uint_fast8_t column)
 {
     register uint_fast16_t address = row * mat->cols + column;
     return mat->data[address];

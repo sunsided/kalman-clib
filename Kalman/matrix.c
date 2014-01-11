@@ -18,52 +18,6 @@ void matrix_init(matrix_t *mat, const uint_fast8_t rows, const uint_fast8_t cols
     *(matrix_data_t**)&mat->data = buffer;
 }
 
-/*!
-* \brief Gets a copy of a matrix column
-* \param[in] mat The matrix to initialize
-* \param[in] rows The column
-* \param[in] row_data Pointer to an array of the correct length to hold a column of matrix {\ref mat}.
-*/
-void matrix_get_column_copy(matrix_t *mat, const register uint_fast8_t column, matrix_data_t *row_data)
-{
-    // start from the back, so target index is equal to the index of the last row.
-    register uint_fast8_t target_index = mat->rows - 1;
-
-    // also, the source index is the column..th index
-    register int_fast16_t stride = mat->cols;
-    register int_fast16_t source_index = target_index * stride + column;
-
-    // fetch data
-    do
-    {
-        row_data[target_index] = mat->data[source_index];
-
-        --target_index;
-        source_index -= stride;
-    }
-    while (source_index >= 0);
-}
-
-/*!
-* \brief Gets a copy of a matrix row
-* \param[in] mat The matrix to initialize
-* \param[in] rows The row
-* \param[in] row_data Pointer to an array of the correct length to hold a row of matrix {\ref mat}.
-*/
-void matrix_get_row_copy(matrix_t *mat, const register uint_fast8_t row, matrix_data_t *row_data)
-{
-    register uint_fast8_t target_index = mat->cols;
-    register int_fast16_t source_index = (row+1) * mat->cols;
-
-    // fetch data
-    do
-    {
-        --target_index;
-        --source_index;
-        row_data[target_index] = mat->data[source_index];
-    } while (target_index != 0);
-}
-
 /**
 * \brief Inverts a lower triangular matrix.
 * \param[in] lower The lower triangular matrix to be inverted.
@@ -139,10 +93,7 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
     for (j = 0; j < b->cols; j++) 
     {
         // create a copy of the column in B to avoid cache issues
-        for (k = 0; k < b->rows; k++) 
-        {
-            baux[k] = matrix_get(b, k, j);
-        }
+        matrix_get_column_copy(b, j, baux);
 
         int indexA = 0;
         for (i = 0; i < a->rows; i++) 

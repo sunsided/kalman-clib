@@ -95,10 +95,36 @@ EXTERN_INLINE_MATRIX void matrix_set(matrix_t *mat, const register uint_fast8_t 
 * \param[in] rows The row
 * \param[out] row_data A pointer to the given matrix row
 */
-EXTERN_INLINE_MATRIX void matrix_get_row_pointer(matrix_t *mat, const register uint_fast8_t row, matrix_data_t **row_data)
+EXTERN_INLINE_MATRIX void matrix_get_row_pointer(const matrix_t *const mat, const register uint_fast8_t row, matrix_data_t **row_data)
 {
     register uint_fast16_t address = row * mat->cols;
     *row_data = &mat->data[address];
+}
+
+/*!
+* \brief Gets a copy of a matrix column
+* \param[in] mat The matrix to initialize
+* \param[in] rows The column
+* \param[in] row_data Pointer to an array of the correct length to hold a column of matrix {\ref mat}.
+*/
+EXTERN_INLINE_MATRIX void matrix_get_column_copy(const matrix_t *const mat, const register uint_fast8_t column, register matrix_data_t *row_data)
+{
+    // start from the back, so target index is equal to the index of the last row.
+    register uint_fast8_t target_index = mat->rows - 1;
+
+    // also, the source index is the column..th index
+    const register int_fast16_t stride = mat->cols;
+    register int_fast16_t source_index = target_index * stride + column;
+
+    // fetch data
+    row_data[target_index] = mat->data[source_index];
+    while (target_index != 0)
+    {
+        --target_index;
+        source_index -= stride;
+
+        row_data[target_index] = mat->data[source_index];
+    }
 }
 
 /*!
@@ -107,14 +133,19 @@ EXTERN_INLINE_MATRIX void matrix_get_row_pointer(matrix_t *mat, const register u
 * \param[in] rows The row
 * \param[in] row_data Pointer to an array of the correct length to hold a row of matrix {\ref mat}.
 */
-void matrix_get_row_copy(matrix_t *mat, const register uint_fast8_t row, matrix_data_t *row_data);
+EXTERN_INLINE_MATRIX void matrix_get_row_copy(const matrix_t *const mat, const register uint_fast8_t row, register matrix_data_t *row_data)
+{
+    register uint_fast8_t target_index = mat->cols;
+    register int_fast16_t source_index = (row + 1) * mat->cols;
 
-/*!
-* \brief Gets a copy of a matrix column
-* \param[in] mat The matrix to initialize
-* \param[in] rows The column
-* \param[in] row_data Pointer to an array of the correct length to hold a column of matrix {\ref mat}.
-*/
-void matrix_get_column_copy(matrix_t *mat, const register uint_fast8_t column, matrix_data_t *row_data);
+    // fetch data
+    row_data[target_index] = mat->data[source_index];
+    while (target_index != 0)
+    {
+        --target_index;
+        --source_index;
+        row_data[target_index] = mat->data[source_index];
+    }
+}
 
 #endif

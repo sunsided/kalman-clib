@@ -55,10 +55,21 @@ void matrix_init(matrix_t *mat, const uint_fast8_t rows, const uint_fast8_t cols
 void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRICT inverse) PURE HOT;
 
 /*!
+* \brief Performs a matrix multiplication such that {\ref c} = {\ref x} * {\ref b}
+* \param[in] a Matrix A
+* \param[in] x Vector x
+* \param[in] c Resulting vector C (will be overwritten)
+* \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+*
+* Kudos: https://code.google.com/p/efficient-java-matrix-library
+*/
+void matrix_mult_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT const c) PURE HOT;
+
+/*!
 * \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
 * \param[in] a Matrix A
 * \param[in] b Matrix B
-* \param[in] c Resulting matrix C
+* \param[in] c Resulting matrix C (will be overwritten)
 * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
@@ -66,15 +77,35 @@ void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRIC
 void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c, matrix_data_t *baux) PURE HOT;
 
 /*!
-* \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
+* \brief Performs a matrix multiplication with transposed B such that {\ref c} = {\ref a} * {\ref b'}
 * \param[in] a Matrix A
 * \param[in] b Matrix B
-* \param[in] c Resulting matrix C
-* \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+* \param[in] c Resulting matrix C (will be overwritten)
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
 void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c) PURE HOT;
+
+/*!
+* \brief Performs a matrix multiplication with transposed B and adds the result to {\ref c} such that {\ref c} = {\ref c} + {\ref a} * {\ref b'}
+* \param[in] a Matrix A
+* \param[in] b Matrix B
+* \param[in] c Resulting matrix C (will be added to)
+*
+* Kudos: https://code.google.com/p/efficient-java-matrix-library
+*/
+void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c) PURE HOT;
+
+/*!
+* \brief Performs a matrix multiplication with transposed B and scales the result such that {\ref c} = {\ref a} * {\ref b'} * {\ref scale}
+* \param[in] a Matrix A
+* \param[in] b Matrix B
+* \param[in] scale Scaling factor
+* \param[in] c Resulting matrix C(will be overwritten)
+*
+* Kudos: https://code.google.com/p/efficient-java-matrix-library
+*/
+void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, register const matrix_data_t scale, const matrix_t *RESTRICT const c) PURE HOT;
 
 /*!
 * \brief Gets a matrix element
@@ -161,4 +192,5 @@ EXTERN_INLINE_MATRIX void matrix_get_row_copy(const matrix_t *const mat, const r
     }
 }
 
+#undef EXTERN_INLINE_MATRIX
 #endif

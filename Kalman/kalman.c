@@ -1,34 +1,5 @@
+#define EXTERN_INLINE_KALMAN INLINE
 #include "kalman.h"
-
-/*!
-* \brief Gets a pointer to the state vector.
-* \param[in] kf The Kalman Filter structure to correct.
-* \return The state vector.
-*/
-matrix_t* kalman_get_state(kalman_t *kf)
-{
-    return &(kf->x);
-}
-
-/*!
-* \brief Gets a pointer to the input vector.
-* \param[in] kf The Kalman Filter structure to correct.
-* \return The input vector.
-*/
-matrix_t* kalman_get_input(kalman_t *kf)
-{
-    return &(kf->u);
-}
-
-/*!
-* \brief Gets a pointer to the input covariance matrix.
-* \param[in] kf The Kalman Filter structure to correct.
-* \return The input covariance matrix.
-*/
-matrix_t* kalman_get_input_covariance(kalman_t *kf)
-{
-    return &(kf->Q);
-}
 
 /*!
 * \brief Initializes the Kalman Filter
@@ -75,4 +46,58 @@ void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_s
     matrix_init(&kfm->K, num_states, num_measurements, K);
     matrix_init(&kfm->S, num_measurements, num_measurements, S);
     matrix_init(&kfm->y, num_measurements, 1, y);
+}
+
+
+/*!
+* \brief Performs the time update / prediction step.
+* \param[in] kf The Kalman Filter structure to predict with.
+* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
+*
+* This call assumes that the input covariance and variables are already set in the filter structure.
+*/
+void kalman_predict(kalman_t *kf, matrix_data_t lambda)
+{
+    matrix_t xpredicted;
+    matrix_t temp;
+    matrix_data_t aux;
+    
+    const matrix_t *const A = &kf->A;
+    const matrix_t *const B = &kf->B;
+    const matrix_t * P = &kf->P;
+
+    /************************************************************************/
+    /* Predict next state using system dynamics                             */
+    /* x = A*x                                                              */
+    /************************************************************************/
+
+    // x = A*x
+    matrix_mult_vector(A, &kf->x, &xpredicted);
+
+    /************************************************************************/
+    /* Predict next covariance using system dynamics and input              */
+    /* P = A*P*A' * 1/lambda^2 + B*Q*B'                                     */
+    /************************************************************************/
+
+    // 1/lambda^2
+    lambda = (matrix_data_t)1.0 / (lambda * lambda);
+
+    // P = A*P*A'
+    matrix_mult(A, P, &temp, &aux);                 // temp = A*P
+    matrix_multscale_transb(&temp, A, lambda, P);   // P = temp*A'
+
+    // P = P + B*Q*B'
+    if (kf->B.rows > 0)
+    {
+        matrix_mult(B, &kf->Q, &temp, &aux); // temp = B*Q
+        matrix_multadd_transb(&temp, B, P);  // P = P + temp*A'
+    }
+}
+
+/*!
+* \brief Performs the measurement update step.
+* \param[in] kf The Kalman Filter structure to correct.
+*/
+void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
+{
 }

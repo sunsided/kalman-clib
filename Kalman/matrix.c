@@ -75,7 +75,14 @@ void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRIC
 */
 void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c, matrix_data_t *baux)
 {
-    uint_fast8_t i, j, k;
+    register int_fast16_t i, j, k;
+    const uint_fast8_t bcols = b->cols;
+    const uint_fast8_t ccols = c->cols;
+    const uint_fast8_t brows = b->rows;
+    const uint_fast8_t arows = a->rows;
+    
+    matrix_data_t *RESTRICT const adata = a->data;
+    matrix_data_t *RESTRICT const cdata = c->data;
 
     // assert pointer validity
     assert(a != (matrix_t*)0);
@@ -89,21 +96,22 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
     // test dimension of c
     assert(a->rows == c->rows);
     assert(b->cols == c->cols);
-
-    for (j = 0; j < b->cols; j++) 
+    
+    //for (j = 0; j < bcols; ++j)
+    for (j = bcols-1; j >= 0; --j)
     {
         // create a copy of the column in B to avoid cache issues
         matrix_get_column_copy(b, j, baux);
 
-        int indexA = 0;
-        for (i = 0; i < a->rows; i++) 
+        uint_fast16_t indexA = 0;
+        for (i = 0; i < arows; ++i)
         {
             matrix_data_t total = (matrix_data_t)0;
-            for (k = 0; k < b->rows;) 
+            for (k = 0; k < brows;)
             {
-                total += a->data[indexA++]*baux[k++];
+                total += adata[indexA++]*baux[k++];
             }
-            c->data[i*c->cols + j] = total;
+            cdata[i*ccols + j] = total;
         }
     }
 }

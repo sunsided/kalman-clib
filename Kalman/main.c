@@ -116,6 +116,39 @@ void matrix_multiply_aux()
     assert(cd[11] == 12);
 }
 
+/*!
+*  \brief Tests matrix multiplication with transposed B
+*/
+void matrix_multiply_transb()
+{
+    matrix_data_t ad[3 * 3] = { 1, 0.5, 0,
+        0.5, 1, 0,
+        0, 0, 1 };
+
+    matrix_data_t bd[3 * 3] = { 1, 2, 3,
+        5, 6, 7,
+        9, 10, 11 };
+
+    matrix_data_t cd[3 * 3] = { 0, 0, 0,
+        0, 0, 0,
+        0, 0, 0 };
+    
+    // prepare matrix structures
+    matrix_t a, b, c;
+
+    // initialize the matrices
+    matrix_init(&a, 3, 3, ad);
+    matrix_init(&b, 3, 3, bd);
+    matrix_init(&c, 3, 3, cd);
+
+    // multiply
+    matrix_mult_transb(&a, &b, &c);
+    assert(cd[0] == 2);
+    assert(cd[1] == 8);
+    assert(cd[4] == 8.5);
+    assert(cd[8] == 11);
+}
+
 /**
 * \brief Main entry point
 */
@@ -124,4 +157,5 @@ void main()
     matrix_inverse();
     matrix_copy_cols_and_rows();
     matrix_multiply_aux();
+    matrix_multiply_transb();
 }

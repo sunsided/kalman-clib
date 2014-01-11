@@ -115,3 +115,47 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
         }
     }
 }
+
+/*!
+* \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
+* \param[in] a Matrix A
+* \param[in] b Matrix B
+* \param[in] c Resulting matrix C
+* \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+*
+* Kudos: https://code.google.com/p/efficient-java-matrix-library
+*/
+void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c)
+{
+    register uint_fast16_t xA, xB, indexA, indexB, end;
+    const uint_fast8_t bcols = b->cols;
+    const uint_fast8_t brows = b->rows;
+    const uint_fast8_t arows = a->rows;
+    const uint_fast8_t acols = a->cols;
+
+    matrix_data_t *const adata = a->data;
+    matrix_data_t *const bdata = b->data;
+    matrix_data_t *RESTRICT const cdata = c->data;
+
+    uint_fast16_t cIndex = 0;
+    uint_fast16_t aIndexStart = 0;
+
+    for (xA = 0; xA < arows; ++xA) 
+    {
+        end = aIndexStart + bcols;
+        indexB = 0;
+        for (xB = 0; xB < brows; ++xB) 
+        {
+            indexA = aIndexStart;
+            matrix_data_t total = 0;
+
+            while (indexA < end) 
+            {
+                total += adata[indexA++] * bdata[indexB++];
+            }
+
+            cdata[cIndex++] = total;
+        }
+        aIndexStart += acols;
+    }
+}

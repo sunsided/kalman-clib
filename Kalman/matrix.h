@@ -74,7 +74,7 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c, matrix_data_t *baux) PURE HOT;
+void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c) PURE HOT;
 
 /*!
 * \brief Gets a matrix element

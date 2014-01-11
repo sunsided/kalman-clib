@@ -66,6 +66,7 @@
   <ItemGroup>
     <ClCompile Include="cholesky.c" />
     <ClCompile Include="kalman.c" />
+    <ClCompile Include="kalman_example.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="matrix.c" />
   </ItemGroup>
@@ -73,6 +74,7 @@
     <ClInclude Include="cholesky.h" />
     <ClInclude Include="compiler.h" />
     <ClInclude Include="kalman.h" />
+    <ClInclude Include="kalman_factory.h" />
     <ClInclude Include="matrix.h" />
   </ItemGroup>
   <ItemGroup>

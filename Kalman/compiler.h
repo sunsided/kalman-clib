@@ -51,4 +51,9 @@
 */
 #define EXTERN_INLINE extern INLINE
 
+/**
+* \def STATIC_INLINE Marks a function as to be inlined, but also statically defined
+*/
+#define STATIC_INLINE extern INLINE
+
 #endif

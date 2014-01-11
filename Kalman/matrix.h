@@ -60,8 +60,21 @@ void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRIC
 * \param[in] b Matrix B
 * \param[in] c Resulting matrix C
 * \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+*
+* Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
 void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c, matrix_data_t *baux) PURE HOT;
+
+/*!
+* \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
+* \param[in] a Matrix A
+* \param[in] b Matrix B
+* \param[in] c Resulting matrix C
+* \param[in] aux Auxiliary vector that can hold a column of {\ref b}
+*
+* Kudos: https://code.google.com/p/efficient-java-matrix-library
+*/
+void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT const c, matrix_data_t *baux) PURE HOT;
 
 /*!
 * \brief Gets a matrix element

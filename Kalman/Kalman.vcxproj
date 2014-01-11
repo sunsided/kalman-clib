@@ -74,8 +74,9 @@
     <ClInclude Include="cholesky.h" />
     <ClInclude Include="compiler.h" />
     <ClInclude Include="kalman.h" />
-    <ClInclude Include="kalman_factory_init.h" />
+    <ClInclude Include="kalman_factory_filter_init.h" />
     <ClInclude Include="kalman_factory_cleanup.h" />
+    <ClInclude Include="kalman_factory_measurement_init.h" />
     <ClInclude Include="matrix.h" />
   </ItemGroup>
   <ItemGroup>

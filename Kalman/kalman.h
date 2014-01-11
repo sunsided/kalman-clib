@@ -98,7 +98,7 @@ typedef struct
 * \param[in] P The state covariance matrix ({\ref num_states} x {\ref num_states})
 * \param[in] Q The input covariance matrix ({\ref num_inputs} x {\ref num_inputs})
 */
-void kalman_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matrix_data_t *A, matrix_data_t *x, matrix_data_t *B, matrix_data_t *u, matrix_data_t *P, matrix_data_t *Q);
+void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matrix_data_t *A, matrix_data_t *x, matrix_data_t *B, matrix_data_t *u, matrix_data_t *P, matrix_data_t *Q);
 
 /*!
 * \brief Sets the measurement vector
@@ -111,7 +111,7 @@ void kalman_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_i
 * \param[in] S The residual covariance ({\ref num_measurements} x {\ref num_measurements})
 * \param[in] K The Kalman gain ({\ref num_states} x {\ref num_measurements})
 */
-void kalman_initialize_measurement(kalman_measurement_t *kfm, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R, matrix_data_t *y, matrix_data_t *S, matrix_data_t *K);
+void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R, matrix_data_t *y, matrix_data_t *S, matrix_data_t *K);
 
 /*!
 * \brief Performs the time update / prediction step.

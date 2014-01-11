@@ -21,15 +21,15 @@
 * After that, this file must be included
 *
 * \code{.c}
-* #include "kalman_factory_init.h"
+* #include "kalman_factory_filter_init.h"
 * \endcode
 *
 * At this point, the structure \c kalman_filter_acceleration will be created (statically) along with
-* all the required buffers (\c kalman_filter_acceleration_A_buffer, etc.) and the matrices
-* will be set with the correct dimensions.
+* all the required buffers (i.e. \c kalman_filter_acceleration_A_buffer, etc.) and the matrices
+* will be initialized and set with the correct dimensions.
 *
-* In addition, a parameterless static initialization function kalman_filter_acceleration_init() will
-* be created which you will need to call manually.
+* In addition, a parameterless static initialization function \code {kalman_filter_acceleration_init()} will
+* be created which you will need to call manually in order to set up the filter.
 *
 * To clean up the defined macros (e.g. in order to be able to create another named Kalman filter),
 * you will have to include kalman_factory_cleanup.h:
@@ -45,7 +45,8 @@
 * #define KALMAN_NUM_STATES 4
 * #define KALMAN_NUM_INPUTS 0
 
-* #include "kalman_factory_init.h"
+* #include "kalman_factory_filter_init.h"
+* // NOTE that this is the point to create measurement buffers
 * #include "kalman_factory_cleanup.h"
 
 * void test_kalman()
@@ -102,6 +103,13 @@
 /* Name helper macro                                                    */
 /************************************************************************/
 
+#ifndef STRINGIFY
+#define __STRING2(x) #x
+#define STRINGIFY(x) __STRING2(x)
+#endif
+
+#pragma message("** Instantiating Kalman filter \"" STRINGIFY(KALMAN_NAME) "\" with " STRINGIFY(KALMAN_NUM_STATES) " states and " STRINGIFY(KALMAN_NUM_INPUTS) " inputs")
+
 #define __CONCAT(x, y)                                  x ## y
 
 #define KALMAN_FILTER_BASENAME_HELPER(name)             __CONCAT(kalman_filter_, name)
@@ -128,8 +136,13 @@
 #define __KALMAN_BUFFER_P   KALMAN_BUFFER_NAME(P)
 #define __KALMAN_BUFFER_x   KALMAN_BUFFER_NAME(x)
 
+#pragma message("Creating Kalman filter A buffer: " STRINGIFY(__KALMAN_BUFFER_A))
 static matrix_data_t __KALMAN_BUFFER_A[__KALMAN_A_ROWS * __KALMAN_A_COLS];
+
+#pragma message("Creating Kalman filter P buffer: " STRINGIFY(__KALMAN_BUFFER_P))
 static matrix_data_t __KALMAN_BUFFER_P[__KALMAN_P_ROWS * __KALMAN_P_COLS];
+
+#pragma message("Creating Kalman filter x buffer: " STRINGIFY(__KALMAN_BUFFER_x))
 static matrix_data_t __KALMAN_BUFFER_x[__KALMAN_x_ROWS * __KALMAN_x_COLS];
 
 #if KALMAN_NUM_INPUTS > 0
@@ -138,25 +151,42 @@ static matrix_data_t __KALMAN_BUFFER_x[__KALMAN_x_ROWS * __KALMAN_x_COLS];
 #define __KALMAN_BUFFER_Q   KALMAN_BUFFER_NAME(Q)
 #define __KALMAN_BUFFER_u   KALMAN_BUFFER_NAME(u)
 
+#pragma message("Creating Kalman filter B buffer: " STRINGIFY(__KALMAN_BUFFER_B))
 static matrix_data_t __KALMAN_BUFFER_B[__KALMAN_B_ROWS * __KALMAN_B_COLS];
+
+#pragma message("Creating Kalman filter Q buffer: " STRINGIFY(__KALMAN_BUFFER_Q))
 static matrix_data_t __KALMAN_BUFFER_Q[__KALMAN_Q_ROWS * __KALMAN_Q_COLS];
+
+#pragma message("Creating Kalman filter u buffer: " STRINGIFY(__KALMAN_BUFFER_u))
 static matrix_data_t __KALMAN_BUFFER_u[__KALMAN_x_ROWS * __KALMAN_u_COLS];
 
 #else
 
+#pragma message("Creating Kalman filter B buffer: skipped (zero inputs)")
 #define __KALMAN_BUFFER_B ((matrix_data_t*)0)
+
+#pragma message("Creating Kalman filter Q buffer: skipped (zero inputs)")
 #define __KALMAN_BUFFER_Q ((matrix_data_t*)0)
+
+#pragma message("Creating Kalman filter u buffer: skipped (zero inputs)")
 #define __KALMAN_BUFFER_u ((matrix_data_t*)0)
 
 #endif
 
+#pragma message("Creating Kalman filter structure: " STRINGIFY(KALMAN_STRUCT_NAME))
+
+/*!
+* \brief The Kalman filter structure
+*/
 static kalman_t KALMAN_STRUCT_NAME;
+
+#pragma message ("Creating Kalman filter initialization function: " STRINGIFY(KALMAN_FUNCTION_NAME(init()) ))
 
 /*!
 * \brief Initializes the Kalman Filter
 */
 STATIC_INLINE KALMAN_FUNCTION_NAME(init)()
 {
-    kalman_initialize(&KALMAN_STRUCT_NAME, KALMAN_NUM_STATES, KALMAN_NUM_INPUTS, __KALMAN_BUFFER_A, __KALMAN_BUFFER_x, __KALMAN_BUFFER_B, __KALMAN_BUFFER_u, __KALMAN_BUFFER_P, __KALMAN_BUFFER_Q);
+    kalman_filter_initialize(&KALMAN_STRUCT_NAME, KALMAN_NUM_STATES, KALMAN_NUM_INPUTS, __KALMAN_BUFFER_A, __KALMAN_BUFFER_x, __KALMAN_BUFFER_B, __KALMAN_BUFFER_u, __KALMAN_BUFFER_P, __KALMAN_BUFFER_Q);
 }
 

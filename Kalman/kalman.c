@@ -42,7 +42,24 @@ matrix_t* kalman_get_input_covariance(kalman_t *kf)
 * \param[in] P The state covariance matrix ({\ref num_states} x {\ref num_states})
 * \param[in] Q The input covariance matrix ({\ref num_inputs} x {\ref num_inputs})
 */
-void kalman_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matrix_data_t *A, matrix_data_t *x, matrix_data_t *B, matrix_data_t *u, matrix_data_t *P, matrix_data_t *Q)
+void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matrix_data_t *A, matrix_data_t *x, matrix_data_t *B, matrix_data_t *u, matrix_data_t *P, matrix_data_t *Q)
 {
     // TODO: Implement
+}
+
+
+/*!
+* \brief Sets the measurement vector
+* \param[in] kfm The Kalman Filter measurement structure to initialize
+* \param[in] num_measurements The number of measurements
+* \param[in] H The measurement transformation matrix ({\ref num_measurements} x {\ref num_states})
+* \param[in] z The measurement vector ({\ref num_measurements} x \c 1)
+* \param[in] R The process noise / measurement uncertainty ({\ref num_measurements} x {\ref num_measurements})
+* \param[in] y The innovation ({\ref num_measurements} x \c 1)
+* \param[in] S The residual covariance ({\ref num_measurements} x {\ref num_measurements})
+* \param[in] K The Kalman gain ({\ref num_states} x {\ref num_measurements})
+*/
+void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R, matrix_data_t *y, matrix_data_t *S, matrix_data_t *K)
+{
+
 }

@@ -11,38 +11,38 @@
 typedef struct
 {
     /*!
+    * \brief State vector
+    */
+    matrix_t x;
+
+    /*!
     * \brief System matrix
     * \see P
     */
     matrix_t A;
 
     /*!
-    * \brief Input matrix
-    * \see Q
-    */
-    matrix_t B;
-    
-    /*!
     * \brief System covariance matrix
     * \see A
     */
     matrix_t P;
+    
+    /*!
+    * \brief Input vector
+    */
+    matrix_t u;
+
+    /*!
+    * \brief Input matrix
+    * \see Q
+    */
+    matrix_t B;
 
     /*!
     * \brief Input covariance/uncertainty matrix
     * \see B
     */
     matrix_t Q;
-    
-    /*!
-    * \brief State vector
-    */
-    matrix_t x;
-
-    /*!
-    * \brief Input vector
-    */
-    matrix_t u;
 
 } kalman_t;
 
@@ -52,6 +52,11 @@ typedef struct
 */
 typedef struct
 {
+    /*!
+    * \brief Measurement vector
+    */
+    matrix_t z;
+
     /*!
     * \brief Measurement transformation matrix
     * \see R
@@ -65,9 +70,9 @@ typedef struct
     matrix_t R;
 
     /*!
-    * \brief Kalman gain matrix
+    * \brief Innovation vector
     */
-    matrix_t K;
+    matrix_t y;
 
     /*!
     * \brief Residual covariance matrix
@@ -76,14 +81,9 @@ typedef struct
     matrix_t S;
 
     /*!
-    * \brief Innovation vector
+    * \brief Kalman gain matrix
     */
-    matrix_t y;
-
-    /*!
-    * \brief Measurement vector
-    */
-    matrix_t z;
+    matrix_t K;
 } kalman_measurement_t;
 
 /*!
@@ -112,5 +112,41 @@ void kalman_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_i
 * \param[in] K The Kalman gain ({\ref num_states} x {\ref num_measurements})
 */
 void kalman_initialize_measurement(kalman_measurement_t *kfm, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R, matrix_data_t *y, matrix_data_t *S, matrix_data_t *K);
+
+/*!
+* \brief Performs the time update / prediction step.
+* \param[in] kf The Kalman Filter structure to predict with.
+* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
+* 
+* This call assumes that the input covariance and variables are already set in the filter structure.
+*/
+void kalman_predict(kalman_t *kf, matrix_data_t lambda);
+
+/*!
+* \brief Performs the measurement update step.
+* \param[in] kf The Kalman Filter structure to correct.
+*/
+void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm);
+
+/*!
+* \brief Gets a pointer to the state vector.
+* \param[in] kf The Kalman Filter structure to correct.
+* \return The state vector.
+*/
+matrix_t* kalman_get_state(kalman_t *kf);
+
+/*!
+* \brief Gets a pointer to the input vector.
+* \param[in] kf The Kalman Filter structure to correct.
+* \return The input vector.
+*/
+matrix_t* kalman_get_input(kalman_t *kf);
+
+/*!
+* \brief Gets a pointer to the input covariance matrix.
+* \param[in] kf The Kalman Filter structure to correct.
+* \return The input covariance matrix.
+*/
+matrix_t* kalman_get_input_covariance(kalman_t *kf);
 
 #endif

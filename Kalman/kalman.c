@@ -44,13 +44,20 @@ matrix_t* kalman_get_input_covariance(kalman_t *kf)
 */
 void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matrix_data_t *A, matrix_data_t *x, matrix_data_t *B, matrix_data_t *u, matrix_data_t *P, matrix_data_t *Q)
 {
-    // TODO: Implement
+    matrix_init(&kf->A, num_states, num_states, A);
+    matrix_init(&kf->P, num_states, num_states, P);
+    matrix_init(&kf->x, num_states, 1, x);
+
+    matrix_init(&kf->B, num_states, num_inputs, B);
+    matrix_init(&kf->Q, num_inputs, num_inputs, Q);
+    matrix_init(&kf->u, num_inputs, 1, u);
 }
 
 
 /*!
 * \brief Sets the measurement vector
 * \param[in] kfm The Kalman Filter measurement structure to initialize
+* \param[in] num_states The number of states
 * \param[in] num_measurements The number of measurements
 * \param[in] H The measurement transformation matrix ({\ref num_measurements} x {\ref num_states})
 * \param[in] z The measurement vector ({\ref num_measurements} x \c 1)
@@ -59,7 +66,13 @@ void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_
 * \param[in] S The residual covariance ({\ref num_measurements} x {\ref num_measurements})
 * \param[in] K The Kalman gain ({\ref num_states} x {\ref num_measurements})
 */
-void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R, matrix_data_t *y, matrix_data_t *S, matrix_data_t *K)
+void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_states, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R, matrix_data_t *y, matrix_data_t *S, matrix_data_t *K)
 {
+    matrix_init(&kfm->H, num_measurements, num_states, H);
+    matrix_init(&kfm->R, num_measurements, num_measurements, R);
+    matrix_init(&kfm->z, num_measurements, 1, z);
 
+    matrix_init(&kfm->K, num_states, num_measurements, K);
+    matrix_init(&kfm->S, num_measurements, num_measurements, S);
+    matrix_init(&kfm->y, num_measurements, 1, y);
 }

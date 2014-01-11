@@ -169,9 +169,9 @@ static kalman_measurement_t KALMAN_MEASUREMENT_BASENAME;
 /*!
 * \brief Initializes the Kalman Filter measurement
 */
-STATIC_INLINE KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
+STATIC_INLINE void KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
 {
-    kalman_measurement_initialize(&KALMAN_MEASUREMENT_BASENAME, KALMAN_NUM_MEASUREMENTS, __KALMAN_BUFFER_H, __KALMAN_BUFFER_z, __KALMAN_BUFFER_R, __KALMAN_BUFFER_y, __KALMAN_BUFFER_S, __KALMAN_BUFFER_K);
+    kalman_measurement_initialize(&KALMAN_MEASUREMENT_BASENAME, KALMAN_NUM_STATES, KALMAN_NUM_MEASUREMENTS, __KALMAN_BUFFER_H, __KALMAN_BUFFER_z, __KALMAN_BUFFER_R, __KALMAN_BUFFER_y, __KALMAN_BUFFER_S, __KALMAN_BUFFER_K);
 }
 
 /************************************************************************/

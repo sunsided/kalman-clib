@@ -82,6 +82,7 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
     // x = A*x
     matrix_mult_vector(A, &kf->x, &xpredicted);
     matrix_copy(&xpredicted, &kf->x);
+    // TODO: add unit test
 
     /************************************************************************/
     /* Predict next covariance using system dynamics and input              */
@@ -94,12 +95,14 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
     // P = A*P*A'
     matrix_mult(A, P, &temp, &aux);                 // temp = A*P
     matrix_multscale_transb(&temp, A, lambda, P);   // P = temp*A' * 1/(lambda^2)
+    // TODO: add unit test
 
     // P = P + B*Q*B'
     if (kf->B.rows > 0)
     {
         matrix_mult(B, &kf->Q, &temp, &aux);        // temp = B*Q
         matrix_multadd_transb(&temp, B, P);         // P += temp*B'
+        // TODO: add unit test
     }
 }
 
@@ -130,13 +133,13 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     /************************************************************************/
 
     // y = z - H*x
-    matrix_mult_vector(H, x, y);
-    matrix_sub_inplace(&kfm->z, y);
+    matrix_mult_vector(H, x, y); // TODO: add unit test
+    matrix_sub_inplace(&kfm->z, y); // TODO: add unit test
 
     // S = H*P*H' + R
     matrix_mult(H, P, &temp, &aux);    // temp = A*P
     matrix_mult_transb(&temp, H, S);   // S = temp*A
-    matrix_add_inplace(&kfm->R, S);    // S += R
+    matrix_add_inplace(&kfm->R, S);    // S += R // TODO: add unit test
 
     /************************************************************************/
     /* Calculate Kalman gain                                                */
@@ -155,7 +158,7 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     /************************************************************************/
 
     // x = x + K*y 
-    matrix_multadd_vector(K, y, x);
+    matrix_multadd_vector(K, y, x); // TODO: add unit test
 
     /************************************************************************/
     /* Correct state covariances                                            */
@@ -166,5 +169,6 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     // P = P - K*(H*P)
     matrix_mult(H, P, &temp, &aux);         // temp = H*P
     matrix_mult(K, &temp, &temp2, &aux);    // temp2 = K*temp
-    matrix_sub(P, &temp2, P);               // P -= temp2
+    matrix_sub(P, &temp2, P);               // P -= temp2 
+    // TODO: add unit test
 }

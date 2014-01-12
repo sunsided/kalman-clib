@@ -193,13 +193,14 @@ static matrix_data_t __KALMAN_BUFFER_u[__KALMAN_x_ROWS * __KALMAN_u_COLS];
 #define __KALMAN_BUFFER_aux     KALMAN_BUFFER_NAME(aux)
 #define __KALMAN_BUFFER_tempPBQ KALMAN_BUFFER_NAME(tempPBQ)
 
+#define __KALMAN_aux_size       (__KALMAN_aux_ROWS * __KALMAN_aux_COLS)
 #define __KALMAN_tempP_size     (__KALMAN_tempP_ROWS * __KALMAN_tempP_COLS)
 #define __KALMAN_tempBQ_size    (__KALMAN_tempBQ_ROWS * __KALMAN_tempBQ_COLS)
 
 #define __KALMAN_tempPBQ_size   ((__KALMAN_tempP_size > __KALMAN_tempBQ_size) ? __KALMAN_tempP_size : __KALMAN_tempBQ_size)
 
 #pragma message("Creating Kalman filter aux buffer: " STRINGIFY(__KALMAN_BUFFER_aux))
-static matrix_data_t __KALMAN_BUFFER_aux[__KALMAN_aux_ROWS * __KALMAN_aux_COLS];
+static matrix_data_t __KALMAN_BUFFER_aux[__KALMAN_aux_size];
 
 #pragma message("Creating Kalman filter temporary P/BQ buffer: " STRINGIFY(__KALMAN_BUFFER_tempPBQ))
 static matrix_data_t __KALMAN_BUFFER_tempPBQ[__KALMAN_tempPBQ_size];

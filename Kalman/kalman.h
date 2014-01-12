@@ -140,7 +140,7 @@ typedef struct
         /*!
         * \brief Auxiliary array for matrix multiplication, needs to be MAX(num states, num measurements)
         *
-        * This auxiliary field MUST NOT be aliased with either temporary 1, 2 or S_inverted.
+        * This auxiliary field MUST NOT be aliased with either temporary HP, KHP, HPt or S_inverted.
         */
         matrix_data_t *aux;
         
@@ -170,7 +170,7 @@ typedef struct
         matrix_t temp_KHP;
 
         /*!
-        * \brief PxH'-Sized temporary matrix  (number of states x number of measurements)
+        * \brief PxH'-Sized (H'-Sized) temporary matrix  (number of states x number of measurements)
         *
         * The backing field for this temporary MAY be aliased with temporary temp_HP.
         * The backing field for this temporary MAY be aliased with temporary temp_KHP.

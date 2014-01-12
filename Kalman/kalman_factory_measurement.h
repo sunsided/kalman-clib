@@ -106,6 +106,27 @@
 #define __KALMAN_K_ROWS     KALMAN_NUM_STATES
 #define __KALMAN_K_COLS     KALMAN_NUM_MEASUREMENTS
 
+// auxiliary buffer size
+#define __KALMAN_maux_ROWS      ((KALMAN_NUM_STATES > KALMAN_NUM_MEASUREMENTS) ? KALMAN_NUM_STATES : KALMAN_NUM_MEASUREMENTS)
+#define __KALMAN_maux_COLS      1
+#define __USE_BUFFER_AUX        ((__KALMAN_maux_ROWS * __KALMAN_maux_COLS) > __KALMAN_aux_size)
+
+// inverted S buffer
+#define __KALMAN_Sinv_ROWS      __KALMAN_S_ROWS
+#define __KALMAN_Sinv_COLS      __KALMAN_S_COLS
+
+// temporary HxP buffer
+#define __KALMAN_tempHP_ROWS    __KALMAN_H_ROWS
+#define __KALMAN_tempHP_COLS    __KALMAN_H_COLS
+
+// temporary PxH' buffer
+#define __KALMAN_tempPHt_ROWS    __KALMAN_H_COLS // [sic]
+#define __KALMAN_tempPHt_COLS    __KALMAN_H_ROWS // [sic]
+
+// temporary Kx(HxP) buffer
+#define __KALMAN_tempKHP_ROWS   __KALMAN_P_ROWS
+#define __KALMAN_tempKHP_COLS   __KALMAN_P_COLS
+
 /************************************************************************/
 /* Name helper macro                                                    */
 /************************************************************************/
@@ -128,7 +149,7 @@
 #define KALMAN_MEASUREMENT_BUFFER_NAME(element)                   KALMAN_MEASUREMENT_BASENAME_HELPER(KALMAN_MEASUREMENT_NAME) ## _ ## element ## _buffer
 
 /************************************************************************/
-/* Construct Kalman filter measurement                                  */
+/* Construct Kalman filter measurement buffers                          */
 /************************************************************************/
 
 #include "compiler.h"
@@ -160,6 +181,30 @@ static matrix_data_t __KALMAN_BUFFER_S[__KALMAN_S_ROWS * __KALMAN_S_COLS];
 
 #pragma message("Creating Kalman measurement y buffer: " STRINGIFY(__KALMAN_BUFFER_y))
 static matrix_data_t __KALMAN_BUFFER_y[__KALMAN_y_ROWS * __KALMAN_y_COLS];
+
+/************************************************************************/
+/* Construct Kalman filter measurement buffers: Temporaries             */
+/************************************************************************/
+
+// re-use filter auxiliary buffer if it is large enough
+#if __USE_BUFFER_AUX
+
+#define __KALMAN_BUFFER_maux     __KALMAN_BUFFER_aux
+#pragma message("Re-targeting Kalman measurement aux buffer: " STRINGIFY(__KALMAN_BUFFER_maux))
+
+#else
+
+#define __KALMAN_BUFFER_maux     KALMAN_MEASUREMENT_BUFFER_NAME(aux)
+#define __KALMAN_maux_size       (__KALMAN_maux_ROWS * __KALMAN_maux_COLS)
+
+#pragma message("Creating Kalman measurement aux buffer: " STRINGIFY(__KALMAN_BUFFER_maux))
+static matrix_data_t __KALMAN_BUFFER_maux[__KALMAN_maux_size];
+
+#endif
+
+/************************************************************************/
+/* Construct Kalman filter measurement                                  */
+/************************************************************************/
 
 #pragma message("Creating Kalman measurement structure: " STRINGIFY(KALMAN_MEASUREMENT_BASENAME))
 static kalman_measurement_t KALMAN_MEASUREMENT_BASENAME;
@@ -207,3 +252,16 @@ STATIC_INLINE kalman_measurement_t* KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
 #undef __KALMAN_BUFFER_K
 #undef __KALMAN_BUFFER_S
 #undef __KALMAN_BUFFER_y
+
+#undef __KALMAN_tempKHP_ROWS
+#undef __KALMAN_tempKHP_COLS
+
+#undef __KALMAN_tempPHt_ROWS
+#undef __KALMAN_tempPHt_COLS
+
+#undef __KALMAN_tempHP_ROWS
+#undef __KALMAN_tempHP_COLS
+
+#undef __KALMAN_maux_ROWS
+#undef __KALMAN_maux_COLS
+#undef __USE_BUFFER_AUX

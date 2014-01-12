@@ -139,21 +139,51 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm);
 /*!
 * \brief Gets a pointer to the state vector.
 * \param[in] kf The Kalman Filter structure to correct.
-* \return The state vector.
+* \return The state vector x.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_state(kalman_t *kf)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_state_vector(kalman_t *kf)
 {
     return &(kf->x);
 }
 
 /*!
+* \brief Gets a pointer to the state vector.
+* \param[in] kf The Kalman Filter structure to correct.
+* \return The state transition matrix A.
+*/
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_state_transition(kalman_t *kf)
+{
+    return &(kf->A);
+}
+
+/*!
+* \brief Gets a pointer to the input covariance matrix.
+* \param[in] kf The Kalman Filter structure to correct.
+* \return The system covariance matrix.
+*/
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_system_covariance(kalman_t *kf)
+{
+    return &(kf->P);
+}
+
+/*!
 * \brief Gets a pointer to the input vector.
 * \param[in] kf The Kalman Filter structure to correct.
-* \return The input vector.
+* \return The input vector u.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_input(kalman_t *kf)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_vector(kalman_t *kf)
 {
     return &(kf->u);
+}
+
+/*!
+* \brief Gets a pointer to the input vector.
+* \param[in] kf The Kalman Filter structure to correct.
+* \return The input transition matrix B.
+*/
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_transition(kalman_t *kf)
+{
+    return &(kf->B);
 }
 
 /*!

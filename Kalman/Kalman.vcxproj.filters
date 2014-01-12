@@ -33,9 +33,6 @@
     <ClCompile Include="matrix_unittests.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kalman_example_ballistic.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="kalman_example_gravity.c">
       <Filter>Source Files</Filter>
     </ClCompile>

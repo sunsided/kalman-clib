@@ -67,7 +67,6 @@
     <ClCompile Include="cholesky.c" />
     <ClCompile Include="kalman.c" />
     <ClCompile Include="kalman_example.c" />
-    <ClCompile Include="kalman_example_ballistic.c" />
     <ClCompile Include="kalman_example_gravity.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="matrix.c" />

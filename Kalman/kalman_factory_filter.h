@@ -99,6 +99,15 @@
 #define __KALMAN_Q_ROWS     KALMAN_NUM_INPUTS
 #define __KALMAN_Q_COLS     KALMAN_NUM_INPUTS
 
+#define __KALMAN_aux_ROWS     ((KALMAN_NUM_STATES > KALMAN_NUM_INPUTS) ? KALMAN_NUM_STATES : KALMAN_NUM_INPUTS)
+#define __KALMAN_aux_COLS     1
+
+#define __KALMAN_tempP_ROWS  __KALMAN_P_ROWS
+#define __KALMAN_tempP_COLS  __KALMAN_P_COLS
+
+#define __KALMAN_tempBQ_ROWS __KALMAN_B_ROWS
+#define __KALMAN_tempBQ_COLS __KALMAN_B_COLS
+
 /************************************************************************/
 /* Name helper macro                                                    */
 /************************************************************************/
@@ -125,7 +134,7 @@
 #define KALMAN_STRUCT_NAME                              KALMAN_FILTER_BASENAME
 
 /************************************************************************/
-/* Construct Kalman filter                                              */
+/* Construct Kalman filter buffers: State                               */
 /************************************************************************/
 
 #include "compiler.h"
@@ -145,6 +154,10 @@ static matrix_data_t __KALMAN_BUFFER_P[__KALMAN_P_ROWS * __KALMAN_P_COLS];
 #pragma message("Creating Kalman filter x buffer: " STRINGIFY(__KALMAN_BUFFER_x))
 static matrix_data_t __KALMAN_BUFFER_x[__KALMAN_x_ROWS * __KALMAN_x_COLS];
 
+/************************************************************************/
+/* Construct Kalman filter buffers: Inputs                              */
+/************************************************************************/
+
 #if KALMAN_NUM_INPUTS > 0
 
 #define __KALMAN_BUFFER_B   KALMAN_BUFFER_NAME(B)
@@ -162,16 +175,47 @@ static matrix_data_t __KALMAN_BUFFER_u[__KALMAN_x_ROWS * __KALMAN_u_COLS];
 
 #else
 
-#pragma message("Creating Kalman filter B buffer: skipped (zero inputs)")
+#pragma message("Skipping Kalman filter B buffer: (zero inputs)")
 #define __KALMAN_BUFFER_B ((matrix_data_t*)0)
 
-#pragma message("Creating Kalman filter Q buffer: skipped (zero inputs)")
+#pragma message("Skipping Kalman filter Q buffer: (zero inputs)")
 #define __KALMAN_BUFFER_Q ((matrix_data_t*)0)
 
-#pragma message("Creating Kalman filter u buffer: skipped (zero inputs)")
+#pragma message("Skipping Kalman filter u buffer: (zero inputs)")
 #define __KALMAN_BUFFER_u ((matrix_data_t*)0)
 
 #endif
+
+/************************************************************************/
+/* Construct Kalman filter buffers: Temporaries                         */
+/************************************************************************/
+
+#define __KALMAN_BUFFER_aux   KALMAN_BUFFER_NAME(aux)
+#define __KALMAN_BUFFER_tempP   KALMAN_BUFFER_NAME(tempP)
+
+#pragma message("Creating Kalman filter aux buffer: " STRINGIFY(__KALMAN_BUFFER_aux))
+static matrix_data_t __KALMAN_BUFFER_aux[__KALMAN_aux_ROWS * __KALMAN_aux_COLS];
+
+#pragma message("Creating Kalman filter temporary P buffer: " STRINGIFY(__KALMAN_BUFFER_tempP))
+static matrix_data_t __KALMAN_BUFFER_tempP[__KALMAN_tempP_ROWS * __KALMAN_tempP_COLS];
+
+#if KALMAN_NUM_INPUTS > 0
+
+#define __KALMAN_BUFFER_tempBQ   KALMAN_BUFFER_NAME(tempBQ)
+
+#pragma message("Creating Kalman filter temporary BQ buffer: " STRINGIFY(__KALMAN_BUFFER_tempBQ))
+static matrix_data_t __KALMAN_BUFFER_tempBQ[__KALMAN_tempBQ_ROWS * __KALMAN_tempBQ_COLS];
+
+#else
+
+#define __KALMAN_BUFFER_tempBQ   ((matrix_data_t*)0)
+#pragma message("Skipping Kalman filter temporary BQ buffer: (zero inputs)")
+
+#endif
+
+/************************************************************************/
+/* Construct Kalman filter                                              */
+/************************************************************************/
 
 #pragma message("Creating Kalman filter structure: " STRINGIFY(KALMAN_STRUCT_NAME))
 

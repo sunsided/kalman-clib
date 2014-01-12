@@ -71,7 +71,7 @@ typedef struct
         matrix_t predicted_x;
 
         /*!
-        * \brief P-Sized temporary matrix
+        * \brief P-Sized temporary matrix  (number of states x number of states)
         *
         * The backing field for this temporary MAY be aliased with temporary BQ.
         *

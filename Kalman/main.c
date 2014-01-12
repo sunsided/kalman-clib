@@ -271,6 +271,34 @@ void test_matrix_multiplyadd_vector()
     assert(cd[2] == 33);
 }
 
+/*!
+*  \brief Tests matrix addition with B
+*/
+void test_matrix_add_inplace()
+{
+    matrix_data_t ad[3 * 3] = { 1, 0.5, 0,
+        0.5, 1, 0,
+        0, 0, 1 };
+
+    matrix_data_t bd[3 * 3] = { 1, 2, 3,
+        5, 6, 7,
+        9, 10, 11 };
+    
+    // prepare matrix structures
+    matrix_t a, b;
+
+    // initialize the matrices
+    matrix_init(&a, 3, 3, ad);
+    matrix_init(&b, 3, 3, bd);
+
+    // multiply
+    matrix_add_inplace(&a, &b);
+    assert(ad[0] == 2);
+    assert(ad[1] == 2.5);
+    assert(ad[4] == 7);
+    assert(ad[8] == 12);
+}
+
 /**
 * \brief Main entry point
 */
@@ -284,4 +312,5 @@ void main()
     test_matrix_multadd_transb();
     test_matrix_multiply_vector();
     test_matrix_multiplyadd_vector();
+    test_matrix_add_inplace();
 }

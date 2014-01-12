@@ -250,7 +250,7 @@ EXTERN_INLINE_MATRIX void matrix_sub(const matrix_t *const a, matrix_t *const b,
 * \param[in] a The matrix to subtract from
 * \param[in] b The values to subtract, also the output
 */
-EXTERN_INLINE_MATRIX void matrix_sub_inplace(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT b) PURE
+EXTERN_INLINE_MATRIX void matrix_sub_inplace_b(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT b) PURE
 {
     register const uint_fast16_t count = a->cols * a->rows;
     register int_fast16_t index = 0;
@@ -267,21 +267,21 @@ EXTERN_INLINE_MATRIX void matrix_sub_inplace(const matrix_t *RESTRICT const a, c
 
 /*!
 * \brief Adds two matrices in place, using {\ref b} = {\ref a} + {\ref b}
-* \param[in] a The values to add
-* \param[in] b The matrix to add to, also the output
+* \param[in] a The matrix to add to, also the output
+* \param[in] b The values to add
 */
-EXTERN_INLINE_MATRIX void matrix_add_inplace(const matrix_t *const a, const matrix_t *b) PURE
+EXTERN_INLINE_MATRIX void matrix_add_inplace(const matrix_t * a, const matrix_t *const b) PURE
 {
     register const uint_fast16_t count = a->cols * a->rows;
     register int_fast16_t index = 0;
 
-    matrix_data_t *RESTRICT const A = a->data;
-    matrix_data_t *RESTRICT B = b->data;
+    matrix_data_t *RESTRICT A = a->data;
+    matrix_data_t *RESTRICT const B = b->data;
 
     // subtract data
     for (index = count - 1; index >= 0; --index)
     {
-        B[index] += A[index];
+        A[index] += B[index];
     }
 }
 

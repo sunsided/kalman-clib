@@ -93,26 +93,17 @@ void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_s
     matrix_init(&kfm->temporary.KHP, num_states, num_states, temp_KHP);
 }
 
-
 /*!
-* \brief Performs the time update / prediction step.
+* \brief Performs the time update / prediction step of only the state vector
 * \param[in] kf The Kalman Filter structure to predict with.
-* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
-*
-* This call assumes that the input covariance and variables are already set in the filter structure.
 */
-void kalman_predict(kalman_t *kf, matrix_data_t lambda)
+STATIC_INLINE void kalman_predict_x(kalman_t *kf) HOT PURE
 {
     // matrices and vectors
     const matrix_t *RESTRICT const A = &kf->A;
-    const matrix_t *RESTRICT const B = &kf->B;
-    matrix_t *RESTRICT const P = &kf->P;
     matrix_t *RESTRICT const x = &kf->x;
 
     // temporaries
-    matrix_data_t *RESTRICT const aux = kf->temporary.aux;
-    matrix_t *RESTRICT const P_temp = &kf->temporary.P;
-    matrix_t *RESTRICT const BQ_temp = &kf->temporary.BQ;
     matrix_t *RESTRICT const xpredicted = &kf->temporary.predicted_x;
 
     /************************************************************************/
@@ -122,7 +113,77 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
 
     // x = A*x
     matrix_mult_rowvector(A, x, xpredicted);
-    matrix_copy(xpredicted, x); 
+    matrix_copy(xpredicted, x);
+}
+
+/*!
+* \brief Performs the time update / prediction step.
+* \param[in] kf The Kalman Filter structure to predict with.
+* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
+*
+* This call assumes that the input covariance and variables are already set in the filter structure.
+*/
+void kalman_predict(kalman_t *kf)
+{
+    // matrices and vectors
+    const matrix_t *RESTRICT const A = &kf->A;
+    const matrix_t *RESTRICT const B = &kf->B;
+    matrix_t *RESTRICT const P = &kf->P;
+
+    // temporaries
+    matrix_data_t *RESTRICT const aux = kf->temporary.aux;
+    matrix_t *RESTRICT const P_temp = &kf->temporary.P;
+    matrix_t *RESTRICT const BQ_temp = &kf->temporary.BQ;
+
+    /************************************************************************/
+    /* Predict next state using system dynamics                             */
+    /* x = A*x                                                              */
+    /************************************************************************/
+
+    kalman_predict_x(kf);
+
+    /************************************************************************/
+    /* Predict next covariance using system dynamics and input              */
+    /* P = A*P*A' + B*Q*B'                                                  */
+    /************************************************************************/
+
+    // P = A*P*A'
+    matrix_mult(A, P, P_temp, aux);                 // temp = A*P
+    matrix_mult_transb(P_temp, A, P);               // P = temp*A'
+
+    // P = P + B*Q*B'
+    if (kf->B.rows > 0)
+    {
+        matrix_mult(B, &kf->Q, BQ_temp, aux);       // temp = B*Q
+        matrix_multadd_transb(BQ_temp, B, P);       // P += temp*B'
+    }
+}
+
+/*!
+* \brief Performs the time update / prediction step.
+* \param[in] kf The Kalman Filter structure to predict with.
+* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
+*
+* This call assumes that the input covariance and variables are already set in the filter structure.
+*/
+void kalman_predict_tuned(kalman_t *kf, matrix_data_t lambda)
+{
+    // matrices and vectors
+    const matrix_t *RESTRICT const A = &kf->A;
+    const matrix_t *RESTRICT const B = &kf->B;
+    matrix_t *RESTRICT const P = &kf->P;
+
+    // temporaries
+    matrix_data_t *RESTRICT const aux = kf->temporary.aux;
+    matrix_t *RESTRICT const P_temp = &kf->temporary.P;
+    matrix_t *RESTRICT const BQ_temp = &kf->temporary.BQ;
+
+    /************************************************************************/
+    /* Predict next state using system dynamics                             */
+    /* x = A*x                                                              */
+    /************************************************************************/
+
+    kalman_predict_x(kf);
 
     /************************************************************************/
     /* Predict next covariance using system dynamics and input              */

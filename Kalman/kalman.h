@@ -231,11 +231,23 @@ void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_s
 /*!
 * \brief Performs the time update / prediction step.
 * \param[in] kf The Kalman Filter structure to predict with.
-* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
 * 
 * This call assumes that the input covariance and variables are already set in the filter structure.
+*
+* \see kalman_predict_tuned
 */
-void kalman_predict(kalman_t *kf, matrix_data_t lambda) HOT PURE;
+void kalman_predict(kalman_t *kf) HOT PURE;
+
+/*!
+* \brief Performs the time update / prediction step.
+* \param[in] kf The Kalman Filter structure to predict with.
+* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
+*
+* This call assumes that the input covariance and variables are already set in the filter structure.
+*
+* \see kalman_predict
+*/
+void kalman_predict_tuned(kalman_t *kf, matrix_data_t lambda) HOT PURE;
 
 /*!
 * \brief Performs the measurement update step.

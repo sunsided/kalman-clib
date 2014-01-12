@@ -80,7 +80,7 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
     /************************************************************************/
 
     // x = A*x
-    matrix_mult_vector(A, &kf->x, &xpredicted);
+    matrix_mult_rowvector(A, &kf->x, &xpredicted);
     matrix_copy(&xpredicted, &kf->x);
     // TODO: add unit test
 
@@ -101,7 +101,6 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
     {
         matrix_mult(B, &kf->Q, &temp, &aux);        // temp = B*Q
         matrix_multadd_transb(&temp, B, P);         // P += temp*B'
-        // TODO: add unit test
     }
 }
 
@@ -132,7 +131,7 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     /************************************************************************/
 
     // y = z - H*x
-    matrix_mult_vector(H, x, y); // TODO: add unit test
+    matrix_mult_rowvector(H, x, y); // TODO: add unit test
     matrix_sub_inplace(&kfm->z, y); // TODO: add unit test
 
     // S = H*P*H' + R
@@ -157,7 +156,7 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     /************************************************************************/
 
     // x = x + K*y 
-    matrix_multadd_vector(K, y, x); // TODO: add unit test
+    matrix_multadd_rowvector(K, y, x); // TODO: add unit test
 
     /************************************************************************/
     /* Correct state covariances                                            */

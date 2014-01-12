@@ -259,7 +259,7 @@ void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, r
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT c)
+void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT c)
 {
     const uint_fast8_t arows = a->rows;
     const uint_fast8_t acols = a->cols;
@@ -294,7 +294,7 @@ void matrix_mult_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRI
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_multadd_vector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT c)
+void matrix_multadd_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT c)
 {
     const uint_fast8_t arows = a->rows;
     const uint_fast8_t acols = a->cols;

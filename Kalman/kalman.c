@@ -167,5 +167,4 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     matrix_mult(H, P, &temp, &aux);         // temp = H*P
     matrix_mult(K, &temp, &temp2, &aux);    // temp2 = K*temp
     matrix_sub(P, &temp2, P);               // P -= temp2 
-    // TODO: add unit test
 }

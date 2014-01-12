@@ -355,6 +355,34 @@ void test_matrix_sub()
     assert(ad[8] == 1 - 11);
 }
 
+/*!
+*  \brief Tests matrix copying
+*/
+void test_matrix_copy()
+{
+    matrix_data_t ad[3 * 3] = { 1, 0.5, 0,
+        0.5, 1, 0,
+        0, 0, 1 };
+
+    matrix_data_t bd[3 * 3] = { 1, 2, 3,
+        5, 6, 7,
+        9, 10, 11 };
+
+    // prepare matrix structures
+    matrix_t a, b;
+
+    // initialize the matrices
+    matrix_init(&a, 3, 3, ad);
+    matrix_init(&b, 3, 3, bd);
+
+    // multiply
+    matrix_copy(&b, &a);
+    assert(ad[0] == 1);
+    assert(ad[1] == 2);
+    assert(ad[4] == 6);
+    assert(ad[8] == 11);
+}
+
 /**
 * \brief Main entry point
 */
@@ -371,4 +399,5 @@ void main()
     test_matrix_add_inplace();
     test_matrix_sub_inplace_b();
     test_matrix_sub();
+    test_matrix_copy();
 }

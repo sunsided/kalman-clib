@@ -81,7 +81,7 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
 
     // x = A*x
     matrix_mult_rowvector(A, &kf->x, &xpredicted);
-    matrix_copy(&xpredicted, &kf->x);             // TODO: add unit test
+    matrix_copy(&xpredicted, &kf->x);
 
     /************************************************************************/
     /* Predict next covariance using system dynamics and input              */

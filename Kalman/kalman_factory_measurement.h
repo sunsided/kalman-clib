@@ -215,9 +215,19 @@ static matrix_data_t __KALMAN_BUFFER_maux[__KALMAN_maux_size];
 
 // create buffer for inverted s
 #define __KALMAN_Sinv_size      (__KALMAN_Sinv_ROWS * __KALMAN_Sinv_COLS)
+
+#if __KALMAN_Sinv_size <= __KALMAN_tempPBQ_size && !MEASUREMENT_FORCE_NEW_BUFFERS
+
+#define __KALMAN_BUFFER_Sinv  __KALMAN_BUFFER_tempPBQ
+#pragma message("Re-using Kalman filter temporary P/BQ buffer for temporary S-inverted buffer: " STRINGIFY(__KALMAN_BUFFER_Sinv))
+
+#else
+
 #define __KALMAN_BUFFER_Sinv     KALMAN_MEASUREMENT_BUFFER_NAME(Sinv)
 #pragma message("Creating Kalman measurement temporary S-inverted buffer: " STRINGIFY(__KALMAN_BUFFER_Sinv))
 static matrix_data_t __KALMAN_BUFFER_Sinv[__KALMAN_Sinv_size];
+
+#endif
 
 // create buffer for HxP
 #define __KALMAN_tempHP_size    (__KALMAN_tempHP_ROWS * __KALMAN_tempHP_COLS)
@@ -310,6 +320,8 @@ STATIC_INLINE kalman_measurement_t* KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
 #undef __KALMAN_BUFFER_K
 #undef __KALMAN_BUFFER_S
 #undef __KALMAN_BUFFER_y
+
+// TODO: instead of cleaning up the temporary buffers here, clean them up in kalman_factory_cleanup.h. This way, the largest buffers can be reused in other measurement definitions.
 
 #undef __KALMAN_tempKHP_ROWS
 #undef __KALMAN_tempKHP_COLS

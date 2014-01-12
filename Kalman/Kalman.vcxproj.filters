@@ -62,6 +62,9 @@
     <ClInclude Include="matrix_unittests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="kalman_example_gravity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />

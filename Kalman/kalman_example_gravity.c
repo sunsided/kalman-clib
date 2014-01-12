@@ -1,3 +1,5 @@
+#include "kalman_example_gravity.h"
+
 // create the filter structure
 #define KALMAN_NAME gravity
 #define KALMAN_NUM_STATES 3
@@ -13,9 +15,9 @@
 #include "kalman_factory_cleanup.h"
 
 /*!
-* An example for the Kalman Filter factories
+* An example for the Kalman Filter.
 */
-static void kalman_ballistic_init()
+void kalman_gravity_init()
 {
     /************************************************************************/
     /* initialize the filter structures                                     */

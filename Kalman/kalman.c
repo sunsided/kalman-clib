@@ -84,13 +84,13 @@ void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_s
     matrix_init(&kfm->temporary.S_inv, num_measurements, num_measurements, S_inv);
 
     // set temporary HxP matrix
-    matrix_init(&kfm->temporary.temp_HP, num_measurements, num_states, temp_HP);
+    matrix_init(&kfm->temporary.HP, num_measurements, num_states, temp_HP);
 
     // set temporary PxH' matrix
-    matrix_init(&kfm->temporary.temp_PHt, num_states, num_measurements, temp_PHt);
+    matrix_init(&kfm->temporary.PHt, num_states, num_measurements, temp_PHt);
 
     // set temporary KxHxP matrix
-    matrix_init(&kfm->temporary.temp_KHP, num_states, num_states, temp_KHP);
+    matrix_init(&kfm->temporary.KHP, num_states, num_states, temp_KHP);
 }
 
 
@@ -150,20 +150,19 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
 */
 void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
 {
-    // TODO: need those fields in the structure!
-    assert(0);
-    matrix_data_t aux;     // aux needs to be max(num_measurements, num_states)
-    matrix_t Sinv;         // Sinv needs to be at least size(S) --> num_measurements * num_measurements
-    matrix_t temp_HP;      // temp_HP needs to be num_measurements * num_states (MUST NOT be aliased with temp_KHP)
-    matrix_t temp_KHP;     // temp_KHP needs to be num_states * num_states (MUST NOT be aliased with temp_HP)
-    matrix_t temp_PHt;     // temp_PHt needs to be num_states * num_measurements
-
     matrix_t *RESTRICT const P = &kf->P;
     const matrix_t *RESTRICT const H = &kfm->H;
     matrix_t *RESTRICT const K = &kfm->K;
     matrix_t *RESTRICT const S = &kfm->S;
     matrix_t *RESTRICT const y = &kfm->y;
     matrix_t *RESTRICT const x = &kf->x;
+
+    // temporaries
+    matrix_data_t *RESTRICT const aux = kfm->temporary.aux;
+    matrix_t *RESTRICT const Sinv = &kfm->temporary.S_inv;
+    matrix_t *RESTRICT const temp_HP = &kfm->temporary.HP;
+    matrix_t *RESTRICT const temp_KHP = &kfm->temporary.KHP;
+    matrix_t *RESTRICT const temp_PHt = &kfm->temporary.PHt;
 
     /************************************************************************/
     /* Calculate innovation and residual covariance                         */
@@ -176,9 +175,9 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     matrix_sub_inplace_b(&kfm->z, y);
 
     // S = H*P*H' + R
-    matrix_mult(H, P, &temp_HP, &aux);      // temp = H*P
-    matrix_mult_transb(&temp_HP, H, S);     // S = temp*H'
-    matrix_add_inplace(S, &kfm->R);         // S += R 
+    matrix_mult(H, P, temp_HP, aux);            // temp = H*P
+    matrix_mult_transb(temp_HP, H, S);          // S = temp*H'
+    matrix_add_inplace(S, &kfm->R);             // S += R 
 
     /************************************************************************/
     /* Calculate Kalman gain                                                */
@@ -187,9 +186,10 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
 
     // K = P*H' * S^-1
     cholesky_decompose_lower(S);
-    matrix_invert_lower(S, &Sinv);          // Sinv = S^-1
-    matrix_mult_transb(P, H, &temp_PHt);    // temp = P*H'
-    matrix_mult(&temp_PHt, &Sinv, K, &aux); // K = temp*Sinv
+    matrix_invert_lower(S, Sinv);               // Sinv = S^-1
+    // NOTE that to allow aliasing of Sinv and temp_PHt, a copy must be performed here
+    matrix_mult_transb(P, H, temp_PHt);         // temp = P*H'
+    matrix_mult(temp_PHt, Sinv, K, aux);        // K = temp*Sinv
 
     /************************************************************************/
     /* Correct state prediction                                             */
@@ -206,7 +206,7 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     /************************************************************************/
 
     // P = P - K*(H*P)
-    matrix_mult(H, P, &temp_HP, &aux);          // temp_HP = H*P
-    matrix_mult(K, &temp_HP, &temp_KHP, &aux);  // temp_KHP = K*temp_HP
-    matrix_sub(P, &temp_KHP, P);                // P -= temp_KHP 
+    matrix_mult(H, P, temp_HP, aux);            // temp_HP = H*P
+    matrix_mult(K, temp_HP, temp_KHP, aux);     // temp_KHP = K*temp_HP
+    matrix_sub(P, temp_KHP, P);                 // P -= temp_KHP 
 }

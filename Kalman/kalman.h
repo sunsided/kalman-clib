@@ -156,6 +156,7 @@ typedef struct
         /*!
         * \brief H-Sized temporary matrix  (number of measurements x number of states)
         *
+        * The backing field for this temporary MAY be aliased with temporary S_inv.
         * The backing field for this temporary MAY be aliased with temporary temp_PHt.
         * The backing field for this temporary MUST NOT be aliased with temporary temp_KHP.
         */
@@ -164,6 +165,7 @@ typedef struct
         /*!
         * \brief P-Sized temporary matrix  (number of states x number of states)
         *
+        * The backing field for this temporary MAY be aliased with temporary S_inv.
         * The backing field for this temporary MAY be aliased with temporary temp_PHt.
         * The backing field for this temporary MUST NOT be aliased with temporary temp_HP.
         */
@@ -172,6 +174,7 @@ typedef struct
         /*!
         * \brief PxH'-Sized (H'-Sized) temporary matrix  (number of states x number of measurements)
         *
+        * The backing field for this temporary MAY be aliased with temporary S_inv.
         * The backing field for this temporary MAY be aliased with temporary temp_HP.
         * The backing field for this temporary MAY be aliased with temporary temp_KHP.
         */

@@ -215,9 +215,15 @@ void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_
 * \param[in] y The innovation ({\ref num_measurements} x \c 1)
 * \param[in] S The residual covariance ({\ref num_measurements} x {\ref num_measurements})
 * \param[in] K The Kalman gain ({\ref num_states} x {\ref num_measurements})
+* \param[in] aux The auxiliary buffer (length {\ref num_states} or {\ref num_measurements}, whichever is greater)
+* \param[in] S_inv The temporary matrix for the inverted residual covariance  ({\ref num_measurements} x {\ref num_measurements})
+* \param[in] temp_HP The temporary matrix for HxP ({\ref num_measurements} x {\ref num_states})
+* \param[in] temp_PHt The temporary matrix for PxH' ({\ref num_states} x {\ref num_measurements})
+* \param[in] temp_KHP The temporary matrix for KxHxP ({\ref num_states} x {\ref num_states})
 */
 void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_states, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R, 
-                                   matrix_data_t *y, matrix_data_t *S, matrix_data_t *K);
+                                   matrix_data_t *y, matrix_data_t *S, matrix_data_t *K,
+                                   matrix_data_t *aux, matrix_data_t *S_inv, matrix_data_t *temp_HP, matrix_data_t *temp_PHt, matrix_data_t *temp_KHP);
 
 /*!
 * \brief Performs the time update / prediction step.

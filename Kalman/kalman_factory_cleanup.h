@@ -54,3 +54,7 @@
 #undef __KALMAN_tempP_size
 #undef __KALMAN_tempBQ_size
 #undef __KALMAN_tempPBQ_size
+
+// remove measurement defines just because we can
+#undef KALMAN_MEASUREMENT_NAME
+#undef KALMAN_NUM_MEASUREMENTS

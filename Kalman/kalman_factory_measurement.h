@@ -229,12 +229,22 @@ static matrix_data_t __KALMAN_BUFFER_tempHP[__KALMAN_tempHP_size];
 // create buffer for PxH'
 #define __KALMAN_tempPHt_size    (__KALMAN_tempPHt_ROWS * __KALMAN_tempPHt_COLS)
 
+#if !MEASUREMENT_FORCE_NEW_BUFFERS
+
+#define __KALMAN_BUFFER_tempPHt  __KALMAN_BUFFER_tempHP
+#pragma message("Re-using Kalman measurement temporary HxP for temporary PxH' buffer: " STRINGIFY(__KALMAN_BUFFER_tempPHt))
+
+#else
+
 #define __KALMAN_BUFFER_tempPHt  KALMAN_MEASUREMENT_BUFFER_NAME(tempPHt)
 #pragma message("Creating Kalman measurement temporary PxH' buffer: " STRINGIFY(__KALMAN_BUFFER_tempPHt))           // TODO: reuse HxP buffer!
 static matrix_data_t __KALMAN_BUFFER_tempPHt[__KALMAN_tempPHt_size];
 
+#endif
+
 // create Kx(HxP) buffer
 #define __KALMAN_tempKHP_size    (__KALMAN_tempKHP_ROWS * __KALMAN_tempKHP_COLS)
+
 #if (__KALMAN_tempKHP_size <= __KALMAN_tempPBQ_size) && !MEASUREMENT_FORCE_NEW_BUFFERS
 
 #define __KALMAN_BUFFER_tempKHP     __KALMAN_BUFFER_tempPBQ
@@ -247,18 +257,6 @@ static matrix_data_t __KALMAN_BUFFER_tempPHt[__KALMAN_tempPHt_size];
 static matrix_data_t __KALMAN_BUFFER_tempKHP[__KALMAN_tempKHP_size];
 
 #endif
-
-// clean up
-#undef __KALMAN_tempKHP_size
-#undef __KALMAN_BUFFER_tempKHP
-#undef __KALMAN_BUFFER_tempHP
-#undef __KALMAN_tempHP_size
-#undef __KALMAN_BUFFER_tempPHt
-#undef __KALMAN_tempPHt_size
-#undef __KALMAN_BUFFER_Sinv
-#undef __KALMAN_Sinv_size
-#undef __KALMAN_BUFFER_maux
-#undef __KALMAN_maux_size
 
 /************************************************************************/
 /* Construct Kalman filter measurement                                  */
@@ -283,7 +281,9 @@ STATIC_INLINE kalman_measurement_t* KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
     for (i = 0; i < __KALMAN_S_ROWS * __KALMAN_S_COLS; ++i) { __KALMAN_BUFFER_S[i] = 0; }
     for (i = 0; i < __KALMAN_K_ROWS * __KALMAN_K_COLS; ++i) { __KALMAN_BUFFER_K[i] = 0; }
 
-    kalman_measurement_initialize(&KALMAN_MEASUREMENT_BASENAME, KALMAN_NUM_STATES, KALMAN_NUM_MEASUREMENTS, __KALMAN_BUFFER_H, __KALMAN_BUFFER_z, __KALMAN_BUFFER_R, __KALMAN_BUFFER_y, __KALMAN_BUFFER_S, __KALMAN_BUFFER_K);
+    kalman_measurement_initialize(&KALMAN_MEASUREMENT_BASENAME, KALMAN_NUM_STATES, KALMAN_NUM_MEASUREMENTS, __KALMAN_BUFFER_H, __KALMAN_BUFFER_z, __KALMAN_BUFFER_R, 
+                                  __KALMAN_BUFFER_y, __KALMAN_BUFFER_S, __KALMAN_BUFFER_K,
+                                  __KALMAN_BUFFER_maux, __KALMAN_BUFFER_Sinv, __KALMAN_BUFFER_tempHP, __KALMAN_BUFFER_tempPHt, __KALMAN_BUFFER_tempKHP);
     return &KALMAN_MEASUREMENT_BASENAME;
 }
 
@@ -324,4 +324,17 @@ STATIC_INLINE kalman_measurement_t* KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
 #undef __KALMAN_maux_COLS
 #undef __USE_BUFFER_AUX
 
-#undef MEASUREMENT_FORCE_NEW_BUFFERS
+#undef __KALMAN_tempKHP_size
+#undef __KALMAN_BUFFER_tempKHP
+
+#undef __KALMAN_BUFFER_tempHP
+#undef __KALMAN_tempHP_size
+
+#undef __KALMAN_BUFFER_tempPHt
+#undef __KALMAN_tempPHt_size
+
+#undef __KALMAN_BUFFER_Sinv
+#undef __KALMAN_Sinv_size
+
+#undef __KALMAN_BUFFER_maux
+#undef __KALMAN_maux_size

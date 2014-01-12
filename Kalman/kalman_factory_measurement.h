@@ -66,7 +66,7 @@
 /************************************************************************/
 
 #ifndef KALMAN_NAME
-#error KALMAN_NAME needs to be defined prior to inclusion of this file.
+#error KALMAN_NAME needs to be defined prior to inclusion of this file. Did you include kalman_factory_filter.h?
 #endif
 
 #ifndef KALMAN_MEASUREMENT_NAME
@@ -249,6 +249,8 @@ static matrix_data_t __KALMAN_BUFFER_tempKHP[__KALMAN_tempKHP_size];
 #endif
 
 // clean up
+#undef __KALMAN_tempKHP_size
+#undef __KALMAN_BUFFER_tempKHP
 #undef __KALMAN_BUFFER_tempHP
 #undef __KALMAN_tempHP_size
 #undef __KALMAN_BUFFER_tempPHt

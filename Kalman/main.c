@@ -228,8 +228,6 @@ void test_matrix_multiply_vector()
 
     matrix_data_t cd[3 * 1] = { 1, 2, 3 };
 
-    matrix_data_t aux[3] = { 0, 0, 0 };
-
     // prepare matrix structures
     matrix_t a, b, c;
 
@@ -245,6 +243,34 @@ void test_matrix_multiply_vector()
     assert(cd[2] == 3);
 }
 
+/*!
+*  \brief Tests matrix multiplication
+*/
+void test_matrix_multiplyadd_vector()
+{
+    matrix_data_t ad[3 * 3] = { 1, 0.5, 0,
+        0.5, 1, 0,
+        0, 0, 1 };
+
+    matrix_data_t bd[3 * 1] = { 1, 2, 3 };
+
+    matrix_data_t cd[3 * 1] = { 10, 20, 30 };
+
+    // prepare matrix structures
+    matrix_t a, b, c;
+
+    // initialize the matrices
+    matrix_init(&a, 3, 3, ad);
+    matrix_init(&b, 3, 1, bd);
+    matrix_init(&c, 3, 1, cd);
+
+    // multiply
+    matrix_multadd_rowvector(&a, &b, &c);
+    assert(cd[0] == 12);
+    assert(cd[1] == 22.5);
+    assert(cd[2] == 33);
+}
+
 /**
 * \brief Main entry point
 */
@@ -257,4 +283,5 @@ void main()
     test_matrix_multscale_transb();
     test_matrix_multadd_transb();
     test_matrix_multiply_vector();
+    test_matrix_multiplyadd_vector();
 }

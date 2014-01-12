@@ -81,8 +81,7 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
 
     // x = A*x
     matrix_mult_rowvector(A, &kf->x, &xpredicted);
-    matrix_copy(&xpredicted, &kf->x);
-    // TODO: add unit test
+    matrix_copy(&xpredicted, &kf->x);             // TODO: add unit test
 
     /************************************************************************/
     /* Predict next covariance using system dynamics and input              */
@@ -131,13 +130,14 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     /************************************************************************/
 
     // y = z - H*x
-    matrix_mult_rowvector(H, x, y); // TODO: add unit test
+    matrix_mult_rowvector(H, x, y);
     matrix_sub_inplace(&kfm->z, y); // TODO: add unit test
 
     // S = H*P*H' + R
     matrix_mult(H, P, &temp, &aux);    // temp = A*P
     matrix_mult_transb(&temp, H, S);   // S = temp*A
-    matrix_add_inplace(&kfm->R, S);    // S += R // TODO: add unit test
+    matrix_add_inplace(&kfm->R, S);    // S += R 
+    // TODO: add unit test
 
     /************************************************************************/
     /* Calculate Kalman gain                                                */

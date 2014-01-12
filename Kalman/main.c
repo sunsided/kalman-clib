@@ -182,6 +182,39 @@ void test_matrix_multscale_transb()
     assert(cd[8] == 11*2);
 }
 
+/*!
+*  \brief Tests matrix multiplication with transposed B
+*/
+void test_matrix_multadd_transb()
+{
+    matrix_data_t ad[3 * 3] = { 1, 0.5, 0,
+        0.5, 1, 0,
+        0, 0, 1 };
+
+    matrix_data_t bd[3 * 3] = { 1, 2, 3,
+        5, 6, 7,
+        9, 10, 11 };
+
+    matrix_data_t cd[3 * 3] = { 10, 20, 30,
+        40, 50, 60,
+        70, 80, 90 };
+
+    // prepare matrix structures
+    matrix_t a, b, c;
+
+    // initialize the matrices
+    matrix_init(&a, 3, 3, ad);
+    matrix_init(&b, 3, 3, bd);
+    matrix_init(&c, 3, 3, cd);
+
+    // multiply
+    matrix_multadd_transb(&a, &b, &c);
+    assert(cd[0] == 2 + 10);
+    assert(cd[1] == 8 + 20);
+    assert(cd[4] == 8.5 + 50);
+    assert(cd[8] == 11 + 90);
+}
+
 /**
 * \brief Main entry point
 */
@@ -192,4 +225,5 @@ void main()
     test_matrix_multiply_aux();
     test_matrix_multiply_transb();
     test_matrix_multscale_transb();
+    test_matrix_multadd_transb();
 }

@@ -144,8 +144,14 @@ typedef struct
 * \param[in] u The input vector ({\ref num_inputs} x \c 1)
 * \param[in] P The state covariance matrix ({\ref num_states} x {\ref num_states})
 * \param[in] Q The input covariance matrix ({\ref num_inputs} x {\ref num_inputs})
+* \param[in] aux The auxiliary buffer (length {\ref num_states} or {\ref num_inputs}, whichever is greater)
+* \param[in] predictedX The temporary vector for predicted X ({\ref num_states} x \c 1)
+* \param[in] temp_P The temporary matrix for P calculation ({\ref num_states} x {\ref num_states})
+* \param[in] temp_BQ The temporary matrix for BQ calculation ({\ref num_states} x {\ref num_inputs})
 */
-void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matrix_data_t *A, matrix_data_t *x, matrix_data_t *B, matrix_data_t *u, matrix_data_t *P, matrix_data_t *Q);
+void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matrix_data_t *A, matrix_data_t *x, 
+                              matrix_data_t *B, matrix_data_t *u, matrix_data_t *P, matrix_data_t *Q,
+                              matrix_data_t *aux, matrix_data_t *predictedX, matrix_data_t *temp_P, matrix_data_t *temp_BQ);
 
 /*!
 * \brief Sets the measurement vector

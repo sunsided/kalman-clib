@@ -47,3 +47,10 @@
 #undef KALMAN_STRUCT_NAME
 #undef KALMAN_FUNCTION_NAME
 #undef KALMAN_BUFFER_NAME
+
+// remove auxiliaries
+#undef __KALMAN_BUFFER_aux
+#undef __KALMAN_BUFFER_tempPBQ
+#undef __KALMAN_tempP_size
+#undef __KALMAN_tempBQ_size
+#undef __KALMAN_tempPBQ_size

@@ -190,28 +190,19 @@ static matrix_data_t __KALMAN_BUFFER_u[__KALMAN_x_ROWS * __KALMAN_u_COLS];
 /* Construct Kalman filter buffers: Temporaries                         */
 /************************************************************************/
 
-#define __KALMAN_BUFFER_aux   KALMAN_BUFFER_NAME(aux)
-#define __KALMAN_BUFFER_tempP   KALMAN_BUFFER_NAME(tempP)
+#define __KALMAN_BUFFER_aux     KALMAN_BUFFER_NAME(aux)
+#define __KALMAN_BUFFER_tempPBQ KALMAN_BUFFER_NAME(tempPBQ)
+
+#define __KALMAN_tempP_size     (__KALMAN_tempP_ROWS * __KALMAN_tempP_COLS)
+#define __KALMAN_tempBQ_size    (__KALMAN_tempBQ_ROWS * __KALMAN_tempBQ_COLS)
+
+#define __KALMAN_tempPBQ_size   ((__KALMAN_tempP_size > __KALMAN_tempBQ_size) ? __KALMAN_tempP_size : __KALMAN_tempBQ_size)
 
 #pragma message("Creating Kalman filter aux buffer: " STRINGIFY(__KALMAN_BUFFER_aux))
 static matrix_data_t __KALMAN_BUFFER_aux[__KALMAN_aux_ROWS * __KALMAN_aux_COLS];
 
-#pragma message("Creating Kalman filter temporary P buffer: " STRINGIFY(__KALMAN_BUFFER_tempP))
-static matrix_data_t __KALMAN_BUFFER_tempP[__KALMAN_tempP_ROWS * __KALMAN_tempP_COLS];
-
-#if KALMAN_NUM_INPUTS > 0
-
-#define __KALMAN_BUFFER_tempBQ   KALMAN_BUFFER_NAME(tempBQ)
-
-#pragma message("Creating Kalman filter temporary BQ buffer: " STRINGIFY(__KALMAN_BUFFER_tempBQ))
-static matrix_data_t __KALMAN_BUFFER_tempBQ[__KALMAN_tempBQ_ROWS * __KALMAN_tempBQ_COLS];
-
-#else
-
-#define __KALMAN_BUFFER_tempBQ   ((matrix_data_t*)0)
-#pragma message("Skipping Kalman filter temporary BQ buffer: (zero inputs)")
-
-#endif
+#pragma message("Creating Kalman filter temporary P/BQ buffer: " STRINGIFY(__KALMAN_BUFFER_tempPBQ))
+static matrix_data_t __KALMAN_BUFFER_tempPBQ[__KALMAN_tempPBQ_size];
 
 /************************************************************************/
 /* Construct Kalman filter                                              */
@@ -240,7 +231,9 @@ STATIC_INLINE kalman_t* KALMAN_FUNCTION_NAME(init)()
     for (i = 0; i < __KALMAN_B_ROWS * __KALMAN_B_COLS; ++i) { __KALMAN_BUFFER_B[i] = 0; }
     for (i = 0; i < __KALMAN_Q_ROWS * __KALMAN_Q_COLS; ++i) { __KALMAN_BUFFER_Q[i] = 0; }
 
-    kalman_filter_initialize(&KALMAN_STRUCT_NAME, KALMAN_NUM_STATES, KALMAN_NUM_INPUTS, __KALMAN_BUFFER_A, __KALMAN_BUFFER_x, __KALMAN_BUFFER_B, __KALMAN_BUFFER_u, __KALMAN_BUFFER_P, __KALMAN_BUFFER_Q);
+    kalman_filter_initialize(&KALMAN_STRUCT_NAME, KALMAN_NUM_STATES, KALMAN_NUM_INPUTS, __KALMAN_BUFFER_A, __KALMAN_BUFFER_x, 
+                            __KALMAN_BUFFER_B, __KALMAN_BUFFER_u, __KALMAN_BUFFER_P, __KALMAN_BUFFER_Q,
+                            __KALMAN_BUFFER_aux, __KALMAN_BUFFER_aux, __KALMAN_BUFFER_tempPBQ, __KALMAN_BUFFER_tempPBQ);
     return &KALMAN_STRUCT_NAME;
 }
 

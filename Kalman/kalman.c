@@ -130,10 +130,11 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
 {
     // TODO: need those fields in the structure!
     assert(0);
-    matrix_data_t aux;  // aux needs to be max(num_measurements, num_states)
-    matrix_t Sinv;      // Sinv needs to be at least size(S) --> num_measurements * num_measurements
-    matrix_t temp;      // temp needs to be max(num_measurements, num_states) * max(num_measurements, num_states)
-    matrix_t temp2;     // temp2 needs to be num_states * num_states
+    matrix_data_t aux;     // aux needs to be max(num_measurements, num_states)
+    matrix_t Sinv;         // Sinv needs to be at least size(S) --> num_measurements * num_measurements
+    matrix_t temp_HP;      // temp_HP needs to be num_measurements * num_states (MUST NOT be aliased with temp_KHP)
+    matrix_t temp_KHP;     // temp_KHP needs to be num_states * num_states (MUST NOT be aliased with temp_HP)
+    matrix_t temp_PHt;     // temp_PHt needs to be num_states * num_measurements
 
     matrix_t *RESTRICT const P = &kf->P;
     const matrix_t *RESTRICT const H = &kfm->H;
@@ -153,9 +154,9 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     matrix_sub_inplace_b(&kfm->z, y);
 
     // S = H*P*H' + R
-    matrix_mult(H, P, &temp, &aux);    // temp = A*P
-    matrix_mult_transb(&temp, H, S);   // S = temp*A
-    matrix_add_inplace(S, &kfm->R);    // S += R 
+    matrix_mult(H, P, &temp_HP, &aux);      // temp = H*P
+    matrix_mult_transb(&temp_HP, H, S);     // S = temp*H'
+    matrix_add_inplace(S, &kfm->R);         // S += R 
 
     /************************************************************************/
     /* Calculate Kalman gain                                                */
@@ -164,9 +165,9 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
 
     // K = P*H' * S^-1
     cholesky_decompose_lower(S);
-    matrix_invert_lower(S, &Sinv);      // Sinv = S^-1
-    matrix_mult_transb(P, H, &temp);    // temp = P*H'
-    matrix_mult(&temp, &Sinv, K, &aux); // K = temp*Sinv
+    matrix_invert_lower(S, &Sinv);          // Sinv = S^-1
+    matrix_mult_transb(P, H, &temp_PHt);    // temp = P*H'
+    matrix_mult(&temp_PHt, &Sinv, K, &aux); // K = temp*Sinv
 
     /************************************************************************/
     /* Correct state prediction                                             */
@@ -183,7 +184,7 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     /************************************************************************/
 
     // P = P - K*(H*P)
-    matrix_mult(H, P, &temp, &aux);         // temp = H*P
-    matrix_mult(K, &temp, &temp2, &aux);    // temp2 = K*temp
-    matrix_sub(P, &temp2, P);               // P -= temp2 
+    matrix_mult(H, P, &temp_HP, &aux);          // temp_HP = H*P
+    matrix_mult(K, &temp_HP, &temp_KHP, &aux);  // temp_KHP = K*temp_HP
+    matrix_sub(P, &temp_KHP, P);                // P -= temp_KHP 
 }

@@ -131,6 +131,54 @@ typedef struct
     * \brief Kalman gain matrix
     */
     matrix_t K;
+
+    /*!
+    * \brief Temporary variables.
+    */
+    struct
+    {
+        /*!
+        * \brief Auxiliary array for matrix multiplication, needs to be MAX(num states, num measurements)
+        *
+        * This auxiliary field MUST NOT be aliased with either temporary 1, 2 or S_inverted.
+        */
+        matrix_data_t *aux;
+        
+        /*!
+        * \brief S-Sized temporary matrix  (number of states x number of states)
+        *
+        * The backing field for this temporary MAY be aliased with any other temporaries except for aux.
+        *
+        * \see S
+        */
+        matrix_t S_inv;
+
+        /*!
+        * \brief H-Sized temporary matrix  (number of measurements x number of states)
+        *
+        * The backing field for this temporary MAY be aliased with temporary temp_PHt.
+        * The backing field for this temporary MUST NOT be aliased with temporary temp_KHP.
+        */
+        matrix_t temp_HP;
+
+        /*!
+        * \brief P-Sized temporary matrix  (number of states x number of states)
+        *
+        * The backing field for this temporary MAY be aliased with temporary temp_PHt.
+        * The backing field for this temporary MUST NOT be aliased with temporary temp_HP.
+        */
+        matrix_t temp_KHP;
+
+        /*!
+        * \brief PxH'-Sized temporary matrix  (number of states x number of measurements)
+        *
+        * The backing field for this temporary MAY be aliased with temporary temp_HP.
+        * The backing field for this temporary MAY be aliased with temporary temp_KHP.
+        */
+        matrix_t temp_PHt;
+
+    } temporary;
+
 } kalman_measurement_t;
 
 /*!
@@ -165,7 +213,8 @@ void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_
 * \param[in] S The residual covariance ({\ref num_measurements} x {\ref num_measurements})
 * \param[in] K The Kalman gain ({\ref num_states} x {\ref num_measurements})
 */
-void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_states, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R, matrix_data_t *y, matrix_data_t *S, matrix_data_t *K);
+void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_states, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R, 
+                                   matrix_data_t *y, matrix_data_t *S, matrix_data_t *K);
 
 /*!
 * \brief Performs the time update / prediction step.

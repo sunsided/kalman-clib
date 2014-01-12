@@ -174,20 +174,20 @@ void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_s
 * 
 * This call assumes that the input covariance and variables are already set in the filter structure.
 */
-void kalman_predict(kalman_t *kf, matrix_data_t lambda);
+void kalman_predict(kalman_t *kf, matrix_data_t lambda) HOT PURE;
 
 /*!
 * \brief Performs the measurement update step.
 * \param[in] kf The Kalman Filter structure to correct.
 */
-void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm);
+void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm) HOT PURE;
 
 /*!
 * \brief Gets a pointer to the state vector x.
 * \param[in] kf The Kalman Filter structure
 * \return The state vector x.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_state_vector(kalman_t *kf)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_state_vector(kalman_t *kf) HOT PURE
 {
     return &(kf->x);
 }
@@ -197,7 +197,7 @@ EXTERN_INLINE_KALMAN matrix_t* kalman_get_state_vector(kalman_t *kf)
 * \param[in] kf The Kalman Filter structure
 * \return The state transition matrix A.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_state_transition(kalman_t *kf)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_state_transition(kalman_t *kf) HOT PURE
 {
     return &(kf->A);
 }
@@ -217,7 +217,7 @@ EXTERN_INLINE_KALMAN matrix_t* kalman_get_system_covariance(kalman_t *kf)
 * \param[in] kf The Kalman Filter structure
 * \return The input vector u.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_vector(kalman_t *kf)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_vector(kalman_t *kf) HOT PURE
 {
     return &(kf->u);
 }
@@ -227,7 +227,7 @@ EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_vector(kalman_t *kf)
 * \param[in] kf The Kalman Filter structure
 * \return The input transition matrix B.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_transition(kalman_t *kf)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_transition(kalman_t *kf) HOT PURE
 {
     return &(kf->B);
 }
@@ -237,7 +237,7 @@ EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_transition(kalman_t *kf)
 * \param[in] kf The Kalman Filter structure
 * \return The input covariance matrix.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_covariance(kalman_t *kf)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_covariance(kalman_t *kf) HOT PURE
 {
     return &(kf->Q);
 }
@@ -247,7 +247,7 @@ EXTERN_INLINE_KALMAN matrix_t* kalman_get_input_covariance(kalman_t *kf)
 * \param[in] kfm The Kalman Filter measurement structure.
 * \return The measurement vector z.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_measurement_vector(kalman_measurement_t *kfm)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_measurement_vector(kalman_measurement_t *kfm) HOT PURE
 {
     return &(kfm->z);
 }
@@ -257,7 +257,7 @@ EXTERN_INLINE_KALMAN matrix_t* kalman_get_measurement_vector(kalman_measurement_
 * \param[in] kfm The Kalman Filter measurement structure.
 * \return The measurement transformation matrix H.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_measurement_transformation(kalman_measurement_t *kfm)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_measurement_transformation(kalman_measurement_t *kfm) HOT PURE
 {
     return &(kfm->H);
 }
@@ -267,7 +267,7 @@ EXTERN_INLINE_KALMAN matrix_t* kalman_get_measurement_transformation(kalman_meas
 * \param[in] kfm The Kalman Filter measurement structure.
 * \return The process noise matrix R.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_process_noise(kalman_measurement_t *kfm)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_process_noise(kalman_measurement_t *kfm) HOT PURE
 {
     return &(kfm->R);
 }

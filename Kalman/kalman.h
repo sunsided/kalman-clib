@@ -211,7 +211,7 @@ EXTERN_INLINE_KALMAN matrix_t* kalman_get_measurement_vector(kalman_measurement_
 * \param[in] kfm The Kalman Filter measurement structure.
 * \return The measurement transformation matrix H.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_measurement_transformation_matrix(kalman_measurement_t *kfm)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_measurement_transformation(kalman_measurement_t *kfm)
 {
     return &(kfm->H);
 }
@@ -221,7 +221,7 @@ EXTERN_INLINE_KALMAN matrix_t* kalman_get_measurement_transformation_matrix(kalm
 * \param[in] kfm The Kalman Filter measurement structure.
 * \return The process noise matrix R.
 */
-EXTERN_INLINE_KALMAN matrix_t* kalman_get_process_noise_matrix(kalman_measurement_t *kfm)
+EXTERN_INLINE_KALMAN matrix_t* kalman_get_process_noise(kalman_measurement_t *kfm)
 {
     return &(kfm->R);
 }

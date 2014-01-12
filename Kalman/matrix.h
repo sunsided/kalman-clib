@@ -120,7 +120,7 @@ void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, r
 
 /*!
 * \brief Gets a matrix element
-* \param[in] mat The matrix to initialize
+* \param[in] mat The matrix to get from
 * \param[in] rows The row
 * \param[in] cols The column
 * \return The value at the given cell.
@@ -132,11 +132,11 @@ EXTERN_INLINE_MATRIX matrix_data_t matrix_get(const matrix_t *const mat, const r
 }
 
 /*!
-* \brief Gets a matrix element
-* \param[in] mat The matrix to initialize
+* \brief Sets a matrix element
+* \param[in] mat The matrix to set
 * \param[in] rows The row
 * \param[in] cols The column
-* \return The value at the given cell.
+* \param[in] value The value to set
 */
 EXTERN_INLINE_MATRIX void matrix_set(matrix_t *mat, const register uint_fast8_t row, const register uint_fast8_t column, const register matrix_data_t value) PURE COLD
 {
@@ -145,8 +145,21 @@ EXTERN_INLINE_MATRIX void matrix_set(matrix_t *mat, const register uint_fast8_t 
 }
 
 /*!
+* \brief Sets matrix elements in a symmetric matrix
+* \param[in] mat The matrix to set
+* \param[in] rows The row
+* \param[in] cols The column
+* \param[in] value The value to set
+*/
+EXTERN_INLINE_MATRIX void matrix_set_symmetric(matrix_t *mat, const register uint_fast8_t row, const register uint_fast8_t column, const register matrix_data_t value) PURE COLD
+{
+    matrix_set(mat, row, column, value);
+    matrix_set(mat, column, row, value);
+}
+
+/*!
 * \brief Gets a pointer to a matrix row
-* \param[in] mat The matrix to initialize
+* \param[in] mat The matrix to get from
 * \param[in] rows The row
 * \param[out] row_data A pointer to the given matrix row
 */

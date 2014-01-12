@@ -52,7 +52,14 @@
 *   kalman_filter_example_measurement_gyroscope.z.data[0] = 1;
 * }
 * \endcode
+*
+* In order to force creation of separate auxiliary buffers (thus preventing buffer reuse), MEASUREMENT_FORCE_NEW_BUFFERS can be defined
+* prior to inclusion of this file.
 */
+
+#ifndef MEASUREMENT_FORCE_NEW_BUFFERS
+#define MEASUREMENT_FORCE_NEW_BUFFERS 0
+#endif
 
 /************************************************************************/
 /* Check for inputs                                                     */
@@ -76,6 +83,12 @@
 #error KALMAN_NUM_MEASUREMENTS needs to be defined prior to inclusion of this file.
 #elif KALMAN_NUM_MEASUREMENTS < 0
 #error KALMAN_NUM_MEASUREMENTS must be a positive integer or zero if no inputs are used
+#endif
+
+#pragma message("** Instantiating Kalman filter \"" STRINGIFY(KALMAN_NAME) "\" measurement \"" STRINGIFY(KALMAN_MEASUREMENT_NAME) "\" with " STRINGIFY(KALMAN_NUM_MEASUREMENTS) " measured outputs")
+
+#if MEASUREMENT_FORCE_NEW_BUFFERS
+#pragma message("MEASUREMENT_FORCE_NEW_BUFFERS was set. Forcing separate auxiliary buffers.")
 #endif
 
 /************************************************************************/
@@ -131,8 +144,6 @@
 /* Name helper macro                                                    */
 /************************************************************************/
 
-#pragma message("** Instantiating Kalman filter \"" STRINGIFY(KALMAN_NAME) "\" measurement \"" STRINGIFY(KALMAN_MEASUREMENT_NAME) "\" with " STRINGIFY(KALMAN_NUM_MEASUREMENTS) " measured outputs")
-
 #define KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER2(basename)       KALMAN_BASENAME_HELPER(KALMAN_FILTER_BASENAME) ## measurement_ ## basename
 #define KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER3(basename)       KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER2(basename) ## _
 #define KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER(basename)        KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER3(basename)
@@ -187,7 +198,7 @@ static matrix_data_t __KALMAN_BUFFER_y[__KALMAN_y_ROWS * __KALMAN_y_COLS];
 /************************************************************************/
 
 // re-use filter auxiliary buffer if it is large enough
-#if __USE_BUFFER_AUX
+#if __USE_BUFFER_AUX && !MEASUREMENT_FORCE_NEW_BUFFERS
 
 #define __KALMAN_BUFFER_maux     __KALMAN_BUFFER_aux
 #pragma message("Re-using Kalman aux buffer for measurement aux buffer: " STRINGIFY(__KALMAN_BUFFER_maux))
@@ -224,7 +235,7 @@ static matrix_data_t __KALMAN_BUFFER_tempPHt[__KALMAN_tempPHt_size];
 
 // create Kx(HxP) buffer
 #define __KALMAN_tempKHP_size    (__KALMAN_tempKHP_ROWS * __KALMAN_tempKHP_COLS)
-#if __KALMAN_tempKHP_size <= __KALMAN_tempPBQ_size
+#if (__KALMAN_tempKHP_size <= __KALMAN_tempPBQ_size) && !MEASUREMENT_FORCE_NEW_BUFFERS
 
 #define __KALMAN_BUFFER_tempKHP     __KALMAN_BUFFER_tempPBQ
 #pragma message("Re-using Kalman filter temporary P/BQ buffer for measurement temporary Kx(HxP)  buffer: " STRINGIFY(__KALMAN_BUFFER_tempKHP))
@@ -310,3 +321,5 @@ STATIC_INLINE kalman_measurement_t* KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
 #undef __KALMAN_maux_ROWS
 #undef __KALMAN_maux_COLS
 #undef __USE_BUFFER_AUX
+
+#undef MEASUREMENT_FORCE_NEW_BUFFERS

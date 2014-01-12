@@ -168,10 +168,20 @@ static kalman_measurement_t KALMAN_MEASUREMENT_BASENAME;
 
 /*!
 * \brief Initializes the Kalman Filter measurement
+* \return Pointer to the measurement.
 */
-STATIC_INLINE void KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
+STATIC_INLINE kalman_measurement_t* KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
 {
+    int i;
+    for (i = 0; i < __KALMAN_z_ROWS * __KALMAN_z_COLS; ++i) { __KALMAN_BUFFER_z[i] = 0; }
+    for (i = 0; i < __KALMAN_H_ROWS * __KALMAN_H_COLS; ++i) { __KALMAN_BUFFER_H[i] = 0; }
+    for (i = 0; i < __KALMAN_R_ROWS * __KALMAN_R_COLS; ++i) { __KALMAN_BUFFER_R[i] = 0; }
+    for (i = 0; i < __KALMAN_y_ROWS * __KALMAN_y_COLS; ++i) { __KALMAN_BUFFER_y[i] = 0; }
+    for (i = 0; i < __KALMAN_S_ROWS * __KALMAN_S_COLS; ++i) { __KALMAN_BUFFER_S[i] = 0; }
+    for (i = 0; i < __KALMAN_K_ROWS * __KALMAN_K_COLS; ++i) { __KALMAN_BUFFER_K[i] = 0; }
+
     kalman_measurement_initialize(&KALMAN_MEASUREMENT_BASENAME, KALMAN_NUM_STATES, KALMAN_NUM_MEASUREMENTS, __KALMAN_BUFFER_H, __KALMAN_BUFFER_z, __KALMAN_BUFFER_R, __KALMAN_BUFFER_y, __KALMAN_BUFFER_S, __KALMAN_BUFFER_K);
+    return &KALMAN_MEASUREMENT_BASENAME;
 }
 
 /************************************************************************/

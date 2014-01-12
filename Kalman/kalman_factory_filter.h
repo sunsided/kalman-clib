@@ -184,9 +184,19 @@ static kalman_t KALMAN_STRUCT_NAME;
 
 /*!
 * \brief Initializes the Kalman Filter
+* \return Pointer to the filter.
 */
-STATIC_INLINE void KALMAN_FUNCTION_NAME(init)()
+STATIC_INLINE kalman_t* KALMAN_FUNCTION_NAME(init)()
 {
+    int i;
+    for (i = 0; i < __KALMAN_x_ROWS * __KALMAN_x_COLS; ++i) { __KALMAN_BUFFER_x[i] = 0; }
+    for (i = 0; i < __KALMAN_A_ROWS * __KALMAN_A_COLS; ++i) { __KALMAN_BUFFER_A[i] = 0; }
+    for (i = 0; i < __KALMAN_P_ROWS * __KALMAN_P_COLS; ++i) { __KALMAN_BUFFER_P[i] = 0; }
+    for (i = 0; i < __KALMAN_u_ROWS * __KALMAN_x_COLS; ++i) { __KALMAN_BUFFER_x[i] = 0; }
+    for (i = 0; i < __KALMAN_B_ROWS * __KALMAN_B_COLS; ++i) { __KALMAN_BUFFER_B[i] = 0; }
+    for (i = 0; i < __KALMAN_Q_ROWS * __KALMAN_Q_COLS; ++i) { __KALMAN_BUFFER_Q[i] = 0; }
+
     kalman_filter_initialize(&KALMAN_STRUCT_NAME, KALMAN_NUM_STATES, KALMAN_NUM_INPUTS, __KALMAN_BUFFER_A, __KALMAN_BUFFER_x, __KALMAN_BUFFER_B, __KALMAN_BUFFER_u, __KALMAN_BUFFER_P, __KALMAN_BUFFER_Q);
+    return &KALMAN_STRUCT_NAME;
 }
 

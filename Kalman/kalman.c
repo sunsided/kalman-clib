@@ -131,13 +131,12 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
 
     // y = z - H*x
     matrix_mult_rowvector(H, x, y);
-    matrix_sub_inplace_b(&kfm->z, y); // TODO: add unit test
+    matrix_sub_inplace_b(&kfm->z, y);
 
     // S = H*P*H' + R
     matrix_mult(H, P, &temp, &aux);    // temp = A*P
     matrix_mult_transb(&temp, H, S);   // S = temp*A
     matrix_add_inplace(S, &kfm->R);    // S += R 
-    // TODO: add unit test
 
     /************************************************************************/
     /* Calculate Kalman gain                                                */

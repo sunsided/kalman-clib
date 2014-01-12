@@ -51,6 +51,46 @@ typedef struct
     */
     matrix_t Q;
 
+    /*!
+    * \brief Temporary variables.
+    */
+    struct 
+    {
+        /*!
+        * \brief Auxiliary array for matrix multiplication, needs to be MAX(num states, num inputs)
+        *
+        * This auxiliary field can also be used as a backing field for the predicted x vector, however
+        * it MUST NOT be aliased with either temporary P or temporary BQ.
+        */
+        matrix_data_t *aux;
+
+        /*!
+        * \brief x-sized temporary vector
+        * \see x
+        */
+        matrix_t predicted_x;
+
+        /*!
+        * \brief P-Sized temporary matrix
+        *
+        * The backing field for this temporary MAY be aliased with temporary BQ.
+        *
+        * \see P
+        */
+        matrix_t P;
+
+        /*!
+        * \brief BxQ-sized temporary matrix (number of states x number of inputs)
+        *
+        * The backing field for this temporary MAY be aliased with temporary P.
+        *
+        * \see B
+        * \see Q
+        */
+        matrix_t BQ;
+
+    } temporary;
+
 } kalman_t;
 
 /*!

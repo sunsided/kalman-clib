@@ -85,7 +85,7 @@ void matrix_multadd_rowvector(const matrix_t *RESTRICT const a, const matrix_t *
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c, matrix_data_t *baux) PURE HOT;
+void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c, matrix_data_t *const baux) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication with transposed B such that {\ref c} = {\ref a} * {\ref b'}
@@ -175,7 +175,7 @@ EXTERN_INLINE_MATRIX void matrix_get_row_pointer(const matrix_t *const mat, cons
 * \param[in] rows The column
 * \param[in] row_data Pointer to an array of the correct length to hold a column of matrix {\ref mat}.
 */
-EXTERN_INLINE_MATRIX void matrix_get_column_copy(const matrix_t *const mat, const register uint_fast8_t column, register matrix_data_t *row_data) PURE HOT
+EXTERN_INLINE_MATRIX void matrix_get_column_copy(const matrix_t *const mat, const register uint_fast8_t column, register matrix_data_t *const row_data) PURE HOT
 {
     // start from the back, so target index is equal to the index of the last row.
     register uint_fast8_t target_index = mat->rows - 1;
@@ -201,7 +201,7 @@ EXTERN_INLINE_MATRIX void matrix_get_column_copy(const matrix_t *const mat, cons
 * \param[in] rows The row
 * \param[in] row_data Pointer to an array of the correct length to hold a row of matrix {\ref mat}.
 */
-EXTERN_INLINE_MATRIX void matrix_get_row_copy(const matrix_t *const mat, const register uint_fast8_t row, register matrix_data_t *row_data) PURE
+EXTERN_INLINE_MATRIX void matrix_get_row_copy(const matrix_t *const mat, const register uint_fast8_t row, register matrix_data_t *const row_data) PURE
 {
     register uint_fast8_t target_index = mat->cols;
     register int_fast16_t source_index = (row + 1) * mat->cols;

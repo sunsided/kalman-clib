@@ -63,16 +63,17 @@ void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_s
 */
 void kalman_predict(kalman_t *kf, matrix_data_t lambda)
 {
-    // TODO: need those fields in the structure!
-    assert(0);
-    matrix_t xpredicted; // xpredicted and aux max use the same backing field
-    matrix_data_t aux;
-    matrix_t temp;
-    // temp needs to be at least size(P)
-    
+    // matrices and vectors
     const matrix_t *RESTRICT const A = &kf->A;
     const matrix_t *RESTRICT const B = &kf->B;
-    const matrix_t *RESTRICT P = &kf->P;
+    matrix_t *RESTRICT const P = &kf->P;
+    matrix_t *RESTRICT const x = &kf->x;
+
+    // temporaries
+    matrix_data_t *RESTRICT const aux = kf->temporary.aux;
+    matrix_t *RESTRICT const P_temp = &kf->temporary.P;
+    matrix_t *RESTRICT const BQ_temp = &kf->temporary.BQ;
+    matrix_t *RESTRICT const xpredicted = &kf->temporary.predicted_x;
 
     /************************************************************************/
     /* Predict next state using system dynamics                             */
@@ -80,8 +81,8 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
     /************************************************************************/
 
     // x = A*x
-    matrix_mult_rowvector(A, &kf->x, &xpredicted);
-    matrix_copy(&xpredicted, &kf->x);
+    matrix_mult_rowvector(A, x, xpredicted);
+    matrix_copy(xpredicted, x);
 
     /************************************************************************/
     /* Predict next covariance using system dynamics and input              */
@@ -92,14 +93,14 @@ void kalman_predict(kalman_t *kf, matrix_data_t lambda)
     lambda = (matrix_data_t)1.0 / (lambda * lambda); // TODO: This should be precalculated, e.g. using kalman_set_lambda(...);
 
     // P = A*P*A'
-    matrix_mult(A, P, &temp, &aux);                 // temp = A*P
-    matrix_multscale_transb(&temp, A, lambda, P);   // P = temp*A' * 1/(lambda^2)
+    matrix_mult(A, P, P_temp, aux);                 // temp = A*P
+    matrix_multscale_transb(P_temp, A, lambda, P);   // P = temp*A' * 1/(lambda^2)
 
     // P = P + B*Q*B'
     if (kf->B.rows > 0)
     {
-        matrix_mult(B, &kf->Q, &temp, &aux);        // temp = B*Q
-        matrix_multadd_transb(&temp, B, P);         // P += temp*B'
+        matrix_mult(B, &kf->Q, BQ_temp, aux);       // temp = B*Q
+        matrix_multadd_transb(BQ_temp, B, P);        // P += temp*B'
     }
 }
 
@@ -116,12 +117,12 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     matrix_t temp;      // temp needs to be max(num_measurements, num_states) * max(num_measurements, num_states)
     matrix_t temp2;     // temp2 needs to be num_states * num_states
 
-    const matrix_t *RESTRICT P = &kf->P;
+    matrix_t *RESTRICT const P = &kf->P;
     const matrix_t *RESTRICT const H = &kfm->H;
-    const matrix_t *RESTRICT K = &kfm->K;
-    const matrix_t *RESTRICT S = &kfm->S;
-    const matrix_t *y = &kfm->y;
-    const matrix_t *x = &kf->x;
+    matrix_t *RESTRICT const K = &kfm->K;
+    matrix_t *RESTRICT const S = &kfm->S;
+    matrix_t *RESTRICT const y = &kfm->y;
+    matrix_t *RESTRICT const x = &kf->x;
 
     /************************************************************************/
     /* Calculate innovation and residual covariance                         */

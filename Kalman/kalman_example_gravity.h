@@ -6,4 +6,9 @@
 */
 void kalman_gravity_init();
 
+/*!
+* An example for the Kalman Filter.
+*/
+void kalman_gravity_demo();
+
 #endif

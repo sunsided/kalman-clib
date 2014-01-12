@@ -28,7 +28,7 @@
 * all the required buffers (i.e. \c kalman_filter_acceleration_A_buffer, etc.) and the matrices
 * will be initialized and set with the correct dimensions.
 *
-* In addition, a parameterless static initialization function \code {kalman_filter_acceleration_init()} will
+* In addition, a parameterless static initialization function \c {kalman_filter_acceleration_init()} will
 * be created which you will need to call manually in order to set up the filter.
 *
 * To clean up the defined macros (e.g. in order to be able to create another named Kalman filter),

@@ -1,3 +1,19 @@
+/*!
+* \brief Example of the Kalman filter
+*
+* In this example, the gravity constant (~9.81 m/s^2) will be estimated using only
+* measurements of the position. These measurements have a variance of var(s) = 0.5m.
+*
+* The formulas used are:
+* s = s + v*T + g*0.5*T^2
+* v = v + g*T
+* g = g
+*
+* The time constant is set to T = 1s.
+*
+* The initial estimation of the gravity constant is set to 6 m/s^2.
+*/
+
 #include "kalman_example_gravity.h"
 
 // create the filter structure
@@ -31,22 +47,25 @@ void kalman_gravity_init()
     matrix_t *x = kalman_get_state_vector(kf);
     x->data[0] = 0; // s_i
     x->data[1] = 0; // v_i
-    x->data[2] = 0; // g_i
+    x->data[2] = 6; // g_i
 
     /************************************************************************/
     /* set state transition                                                 */
     /************************************************************************/
     matrix_t *A = kalman_get_state_transition(kf);
     
+    // set time constant
+    const matrix_data_t T = 1;
+
     // transition of x to s
     matrix_set(A, 0, 0, 1);   // 1
-    matrix_set(A, 0, 1, 1);   // T
-    matrix_set(A, 0, 2, 0.5); // 0.5 * T^2
+    matrix_set(A, 0, 1, T);   // T
+    matrix_set(A, 0, 2, (matrix_data_t)0.5*T*T); // 0.5 * T^2
     
     // transition of x to v
     matrix_set(A, 1, 0, 0);   // 0
     matrix_set(A, 1, 1, 1);   // 1
-    matrix_set(A, 1, 2, 1);   // T
+    matrix_set(A, 1, 2, T);   // T
 
     // transition of x to g
     matrix_set(A, 2, 0, 0);   // 0
@@ -58,7 +77,7 @@ void kalman_gravity_init()
     /************************************************************************/
     matrix_t *P = kalman_get_system_covariance(kf);
 
-    matrix_set_symmetric(P, 0, 0, 1);   // var(s)
+    matrix_set_symmetric(P, 0, 0, (matrix_data_t)0.1);   // var(s)
     matrix_set_symmetric(P, 0, 1, 0);   // cov(s,v)
     matrix_set_symmetric(P, 0, 2, 0);   // cov(s,g)
 
@@ -81,5 +100,84 @@ void kalman_gravity_init()
     /************************************************************************/
     matrix_t *R = kalman_get_process_noise(kfm);
 
-    matrix_set(R, 0, 0, 1);     // var(s)
+    matrix_set(R, 0, 0, (matrix_data_t)0.5);     // var(s)
+}
+
+/*!
+* An example for the Kalman Filter.
+*/
+void kalman_gravity_demo()
+{
+    // fetch structures
+    kalman_t *kf = &kalman_filter_gravity;
+    kalman_measurement_t *kfm = &kalman_filter_gravity_measurement_position;
+
+    matrix_t *x = kalman_get_state_vector(kf);
+    matrix_t *z = kalman_get_measurement_vector(kfm);
+
+    // define measurements.
+    //
+    // MATLAB source
+    // -------------
+    // s = s + v*T + g*0.5*T^2; 
+    // v = v + g*T;
+    const int count = 15;
+    matrix_data_t real_distance[15] = { 
+        (matrix_data_t)0,
+        (matrix_data_t)4.905, 
+        (matrix_data_t)19.62, 
+        (matrix_data_t)44.145, 
+        (matrix_data_t)78.48, 
+        (matrix_data_t)122.63, 
+        (matrix_data_t)176.58, 
+        (matrix_data_t)240.35, 
+        (matrix_data_t)313.92, 
+        (matrix_data_t)397.31, 
+        (matrix_data_t)490.5, 
+        (matrix_data_t)593.51, 
+        (matrix_data_t)706.32, 
+        (matrix_data_t)828.94, 
+        (matrix_data_t)961.38 };
+
+    // define measurement noise with variance 0.5
+    //
+    // MATLAB source
+    // -------------
+    // noise = 0.5^2*randn(15,1);
+    matrix_data_t measurement_error[15] = { 
+        (matrix_data_t)0.13442, 
+        (matrix_data_t)0.45847, 
+        (matrix_data_t)-0.56471, 
+        (matrix_data_t)0.21554, 
+        (matrix_data_t)0.079691, 
+        (matrix_data_t)-0.32692, 
+        (matrix_data_t)-0.1084, 
+        (matrix_data_t)0.085656, 
+        (matrix_data_t)0.8946, 
+        (matrix_data_t)0.69236, 
+        (matrix_data_t)-0.33747, 
+        (matrix_data_t)0.75873, 
+        (matrix_data_t)0.18135, 
+        (matrix_data_t)-0.015764, 
+        (matrix_data_t)0.17869 };
+
+    // fixed lambda
+    const matrix_data_t lambda = (matrix_data_t)1.0;
+
+    // filter!
+    for (int i = 0; i < count; ++i)
+    {
+        // prediction.
+        kalman_predict(kf, lambda);
+
+        // measure ...
+        matrix_data_t measurement = real_distance[i] + measurement_error[i];
+        matrix_set(z, 0, 0, measurement);
+
+        // update
+        kalman_correct(kf, kfm);
+    }
+
+    // fetch estimated g
+    matrix_data_t g_estimated = x->data[2];
 }

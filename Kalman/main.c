@@ -7,5 +7,7 @@
 void main()
 {
     matrix_unittests();
+ 
     kalman_gravity_init();
+    kalman_gravity_demo();
 }

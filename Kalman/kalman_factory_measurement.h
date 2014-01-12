@@ -190,7 +190,7 @@ static matrix_data_t __KALMAN_BUFFER_y[__KALMAN_y_ROWS * __KALMAN_y_COLS];
 #if __USE_BUFFER_AUX
 
 #define __KALMAN_BUFFER_maux     __KALMAN_BUFFER_aux
-#pragma message("Re-targeting Kalman measurement aux buffer: " STRINGIFY(__KALMAN_BUFFER_maux))
+#pragma message("Re-using Kalman aux buffer for measurement aux buffer: " STRINGIFY(__KALMAN_BUFFER_maux))
 
 #else
 
@@ -201,6 +201,34 @@ static matrix_data_t __KALMAN_BUFFER_y[__KALMAN_y_ROWS * __KALMAN_y_COLS];
 static matrix_data_t __KALMAN_BUFFER_maux[__KALMAN_maux_size];
 
 #endif
+
+// create buffer for inverted s
+#define __KALMAN_BUFFER_Sinv     KALMAN_MEASUREMENT_BUFFER_NAME(Sinv)
+#define __KALMAN_Sinv_size      (__KALMAN_Sinv_ROWS * __KALMAN_Sinv_COLS)
+#pragma message("Creating Kalman measurement temporary S-inverted buffer: " STRINGIFY(__KALMAN_BUFFER_Sinv))
+static matrix_data_t __KALMAN_BUFFER_Sinv[__KALMAN_Sinv_size];
+
+// create buffer for HxP
+#define __KALMAN_BUFFER_tempHP  KALMAN_MEASUREMENT_BUFFER_NAME(HP)
+#define __KALMAN_tempHP_size    (__KALMAN_tempHP_ROWS * __KALMAN_tempHP_COLS)
+#pragma message("Creating Kalman measurement temporary HxP buffer: " STRINGIFY(__KALMAN_BUFFER_tempHP))
+static matrix_data_t __KALMAN_BUFFER_tempHP[__KALMAN_tempHP_size];
+
+// create buffer for PxH'
+#define __KALMAN_BUFFER_tempPHt  KALMAN_MEASUREMENT_BUFFER_NAME(PHt)
+#define __KALMAN_tempPHt_size    (__KALMAN_tempPHt_ROWS * __KALMAN_tempPHt_COLS)
+#pragma message("Creating Kalman measurement temporary PxH' buffer: " STRINGIFY(__KALMAN_BUFFER_tempPHt))
+static matrix_data_t __KALMAN_BUFFER_tempPHt[__KALMAN_tempPHt_size];
+
+// clean up
+#undef __KALMAN_BUFFER_tempHP
+#undef __KALMAN_tempHP_size
+#undef __KALMAN_BUFFER_tempPHt
+#undef __KALMAN_tempPHt_size
+#undef __KALMAN_BUFFER_Sinv
+#undef __KALMAN_Sinv_size
+#undef __KALMAN_BUFFER_maux
+#undef __KALMAN_maux_size
 
 /************************************************************************/
 /* Construct Kalman filter measurement                                  */

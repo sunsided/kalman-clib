@@ -145,7 +145,7 @@ typedef struct
         matrix_data_t *aux;
         
         /*!
-        * \brief S-Sized temporary matrix  (number of states x number of states)
+        * \brief S-Sized temporary matrix  (number of measurements x number of measurements)
         *
         * The backing field for this temporary MAY be aliased with any other temporaries except for aux.
         *

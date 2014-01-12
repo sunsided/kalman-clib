@@ -69,6 +69,7 @@
     <ClCompile Include="kalman_example.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="matrix.c" />
+    <ClCompile Include="matrix_unittests.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cholesky.h" />
@@ -78,6 +79,7 @@
     <ClInclude Include="kalman_factory_cleanup.h" />
     <ClInclude Include="kalman_factory_measurement.h" />
     <ClInclude Include="matrix.h" />
+    <ClInclude Include="matrix_unittests.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />

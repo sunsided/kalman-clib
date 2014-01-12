@@ -30,6 +30,9 @@
     <ClCompile Include="kalman_example.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="matrix_unittests.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="matrix.h">
@@ -51,6 +54,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="kalman_factory_measurement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix_unittests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -109,7 +109,7 @@
 // auxiliary buffer size
 #define __KALMAN_maux_ROWS      ((KALMAN_NUM_STATES > KALMAN_NUM_MEASUREMENTS) ? KALMAN_NUM_STATES : KALMAN_NUM_MEASUREMENTS)
 #define __KALMAN_maux_COLS      1
-#define __USE_BUFFER_AUX        ((__KALMAN_maux_ROWS * __KALMAN_maux_COLS) > __KALMAN_aux_size)
+#define __USE_BUFFER_AUX        ((__KALMAN_maux_ROWS * __KALMAN_maux_COLS) <= __KALMAN_aux_size)
 
 // inverted S buffer
 #define __KALMAN_Sinv_ROWS      __KALMAN_S_ROWS
@@ -224,10 +224,18 @@ static matrix_data_t __KALMAN_BUFFER_tempPHt[__KALMAN_tempPHt_size];
 
 // create Kx(HxP) buffer
 #define __KALMAN_tempKHP_size    (__KALMAN_tempKHP_ROWS * __KALMAN_tempKHP_COLS)
+#if __KALMAN_tempKHP_size <= __KALMAN_tempPBQ_size
+
+#define __KALMAN_BUFFER_tempKHP     __KALMAN_BUFFER_tempPBQ
+#pragma message("Re-using Kalman filter temporary P/BQ buffer for measurement temporary Kx(HxP)  buffer: " STRINGIFY(__KALMAN_BUFFER_tempKHP))
+
+#else
 
 #define __KALMAN_BUFFER_tempKHP  KALMAN_MEASUREMENT_BUFFER_NAME(tempKHP)
 #pragma message("Creating Kalman measurement temporary Kx(HxP) buffer: " STRINGIFY(__KALMAN_BUFFER_tempKHP))
 static matrix_data_t __KALMAN_BUFFER_tempKHP[__KALMAN_tempKHP_size];
+
+#endif
 
 // clean up
 #undef __KALMAN_BUFFER_tempHP

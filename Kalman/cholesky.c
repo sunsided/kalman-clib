@@ -10,7 +10,7 @@
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-int cholesky_decompose_lower(register const matrix_t *const mat) HOT PURE NONNULL
+int cholesky_decompose_lower(register const matrix_t *const mat)
 {
     uint_fast8_t i, j;
     uint_fast8_t n = mat->rows;

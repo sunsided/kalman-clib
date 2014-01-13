@@ -5,7 +5,7 @@
 * \def RESTRICT Marks a restricted pointer 
 */
 #ifdef __GNUC__
-#define RESTRICT restrict
+#define RESTRICT __restrict__
 #else
 #define RESTRICT
 #endif

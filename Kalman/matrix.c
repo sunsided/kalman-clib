@@ -255,28 +255,28 @@ void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, r
 * \param[in] a Matrix A
 * \param[in] x Vector x
 * \param[in] c Resulting vector C (will be overwritten)
-* \param[in] aux Auxiliary vector that can hold a column of {\ref b}
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT c)
+void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, matrix_t *RESTRICT const c)
 {
+    uint_fast16_t i, j;
     const uint_fast8_t arows = a->rows;
     const uint_fast8_t acols = a->cols;
 
-    matrix_data_t *RESTRICT const adata = a->data;
-    matrix_data_t *RESTRICT const xdata = x->data;
+    const matrix_data_t *RESTRICT const adata = a->data;
+    const matrix_data_t *RESTRICT const xdata = x->data;
     matrix_data_t *RESTRICT const cdata = c->data;
 
     uint_fast16_t indexA = 0;
     uint_fast16_t cIndex = 0;
     matrix_data_t b0 = xdata[0];
 
-    for (int i = 0; i < arows; ++i) 
+    for (i = 0; i < arows; ++i) 
     {
         matrix_data_t total = adata[indexA++] * b0;
 
-        for (int j = 1; j < acols; ++j) 
+        for (j = 1; j < acols; ++j) 
         {
             total += adata[indexA++] * xdata[j];
         }
@@ -294,24 +294,25 @@ void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RES
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_multadd_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, const matrix_t *RESTRICT c)
+void matrix_multadd_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, matrix_t *RESTRICT const c)
 {
+    uint_fast16_t i, j;
     const uint_fast8_t arows = a->rows;
     const uint_fast8_t acols = a->cols;
 
-    matrix_data_t *RESTRICT const adata = a->data;
-    matrix_data_t *RESTRICT const xdata = x->data;
+    const matrix_data_t *RESTRICT const adata = a->data;
+    const matrix_data_t *RESTRICT const xdata = x->data;
     matrix_data_t *RESTRICT const cdata = c->data;
 
     uint_fast16_t indexA = 0;
     uint_fast16_t cIndex = 0;
     matrix_data_t b0 = xdata[0];
 
-    for (int i = 0; i < arows; ++i)
+    for (i = 0; i < arows; ++i)
     {
         matrix_data_t total = adata[indexA++] * b0;
 
-        for (int j = 1; j < acols; ++j)
+        for (j = 1; j < acols; ++j)
         {
             total += adata[indexA++] * xdata[j];
         }

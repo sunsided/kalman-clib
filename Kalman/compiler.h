@@ -11,6 +11,15 @@
 #endif
 
 /**
+* \def NONNULL Marks a function as having only non-null arguments
+*/
+#ifdef __GNUC__
+#define NONNULL __attribute__ ((nonnull))
+#else
+#define NONNULL
+#endif
+
+/**
 * \def PURE Marks a function as pure, i.e. without global state
 */
 #ifdef __GNUC__

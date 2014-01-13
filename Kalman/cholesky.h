@@ -1,6 +1,7 @@
 #ifndef _CHOLESKY_H_
 #define _CHOLESKY_H_
 
+#include "compiler.h"
 #include "matrix.h"
 
 /**
@@ -10,6 +11,6 @@
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-int cholesky_decompose_lower(const matrix_t* mat);
+int cholesky_decompose_lower(register const matrix_t *const mat) HOT PURE NONNULL;
 
 #endif

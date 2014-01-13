@@ -129,8 +129,14 @@
 /* Name macro                                                           */
 /************************************************************************/
 
-#define KALMAN_BUFFER_NAME(element)                     KALMAN_BASENAME_HELPER(KALMAN_FILTER_BASENAME) ## element ## _buffer
-#define KALMAN_FUNCTION_NAME(name)                      KALMAN_BASENAME_HELPER(KALMAN_FILTER_BASENAME) ## name
+#define KALMAN_BUFFER_HELPER2(basename, element)         basename ## element ## _buffer
+#define KALMAN_BUFFER_HELPER(basename, element)         KALMAN_BUFFER_HELPER2(basename, element)
+#define KALMAN_BUFFER_NAME(element)                     KALMAN_BUFFER_HELPER(KALMAN_BASENAME_HELPER(KALMAN_FILTER_BASENAME), element)
+
+#define KALMAN_FUNCTION_HELPER2(basename, name)         basename ## name
+#define KALMAN_FUNCTION_HELPER(basename, name)          KALMAN_FUNCTION_HELPER2(basename, name)
+#define KALMAN_FUNCTION_NAME(name)                      KALMAN_FUNCTION_HELPER(KALMAN_BASENAME_HELPER(KALMAN_FILTER_BASENAME), name)
+
 #define KALMAN_STRUCT_NAME                              KALMAN_FILTER_BASENAME
 
 /************************************************************************/
@@ -229,8 +235,11 @@ STATIC_INLINE kalman_t* KALMAN_FUNCTION_NAME(init)()
     for (i = 0; i < __KALMAN_A_ROWS * __KALMAN_A_COLS; ++i) { __KALMAN_BUFFER_A[i] = 0; }
     for (i = 0; i < __KALMAN_P_ROWS * __KALMAN_P_COLS; ++i) { __KALMAN_BUFFER_P[i] = 0; }
     for (i = 0; i < __KALMAN_u_ROWS * __KALMAN_x_COLS; ++i) { __KALMAN_BUFFER_x[i] = 0; }
+
+#if KALMAN_NUM_INPUTS > 0
     for (i = 0; i < __KALMAN_B_ROWS * __KALMAN_B_COLS; ++i) { __KALMAN_BUFFER_B[i] = 0; }
     for (i = 0; i < __KALMAN_Q_ROWS * __KALMAN_Q_COLS; ++i) { __KALMAN_BUFFER_Q[i] = 0; }
+#endif
 
     kalman_filter_initialize(&KALMAN_STRUCT_NAME, KALMAN_NUM_STATES, KALMAN_NUM_INPUTS, __KALMAN_BUFFER_A, __KALMAN_BUFFER_x, 
                             __KALMAN_BUFFER_B, __KALMAN_BUFFER_u, __KALMAN_BUFFER_P, __KALMAN_BUFFER_Q,

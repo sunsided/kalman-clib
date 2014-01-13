@@ -205,7 +205,7 @@ typedef struct
 */
 void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matrix_data_t *A, matrix_data_t *x, 
                               matrix_data_t *B, matrix_data_t *u, matrix_data_t *P, matrix_data_t *Q,
-                              matrix_data_t *aux, matrix_data_t *predictedX, matrix_data_t *temp_P, matrix_data_t *temp_BQ) NONNULL COLD;
+                              matrix_data_t *aux, matrix_data_t *predictedX, matrix_data_t *temp_P, matrix_data_t *temp_BQ) COLD;
 
 /*!
 * \brief Sets the measurement vector

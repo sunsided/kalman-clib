@@ -141,23 +141,24 @@
 #define __KALMAN_tempKHP_COLS   __KALMAN_P_COLS
 
 /************************************************************************/
-/* Name helper macro                                                    */
-/************************************************************************/
-
-#define KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER2(basename)       KALMAN_BASENAME_HELPER(KALMAN_FILTER_BASENAME) ## measurement_ ## basename
-#define KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER3(basename)       KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER2(basename) ## _
-#define KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER(basename)        KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER3(basename)
-
-#define KALMAN_MEASUREMENT_BASENAME_HELPER(basename)             KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER2(basename)
-#define KALMAN_MEASUREMENT_BASENAME                              KALMAN_MEASUREMENT_BASENAME_HELPER(KALMAN_MEASUREMENT_NAME)
-
-/************************************************************************/
 /* Name macro                                                           */
 /************************************************************************/
 
-#define KALMAN_MEASUREMENT_FUNCTION_NAME(action)                  KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER(KALMAN_MEASUREMENT_NAME) ## action
-#define KALMAN_MEASUREMENT_STRUCT_NAME                            KALMAN_FILTER_BASENAME
-#define KALMAN_MEASUREMENT_BUFFER_NAME(element)                   KALMAN_MEASUREMENT_BASENAME_HELPER(KALMAN_MEASUREMENT_NAME) ## _ ## element ## _buffer
+#define KALMAN_MEASUREMENT_BASENAME_HELPER2(basename, measname)                 basename ## _measurement_ ## measname
+#define KALMAN_MEASUREMENT_BASENAME_HELPER(basename, measname)                  KALMAN_MEASUREMENT_BASENAME_HELPER2(basename, measname)
+#define KALMAN_MEASUREMENT_BASENAME                                             KALMAN_MEASUREMENT_BASENAME_HELPER(KALMAN_FILTER_BASENAME, KALMAN_MEASUREMENT_NAME)
+
+#define KALMAN_MEASUREMENT_STRUCT_HELPER2(name)                                 #name
+#define KALMAN_MEASUREMENT_STRUCT_HELPER(name)                                  KALMAN_MEASUREMENT_STRUCT_HELPER2(name)
+#define KALMAN_MEASUREMENT_STRUCT_NAME                                          KALMAN_MEASUREMENT_STRUCT_HELPER(KALMAN_FILTER_BASENAME)
+
+#define KALMAN_MEASUREMENT_FUNCTION_HELPER2(basename, measname, element)        basename ## _measurement_ ## measname ## _ ## element
+#define KALMAN_MEASUREMENT_FUNCTION_HELPER(basename, measname, element)         KALMAN_MEASUREMENT_FUNCTION_HELPER2(basename, measname, element)
+#define KALMAN_MEASUREMENT_FUNCTION_NAME(action)                                KALMAN_MEASUREMENT_FUNCTION_HELPER(KALMAN_FILTER_BASENAME, KALMAN_MEASUREMENT_NAME, action)
+
+#define KALMAN_MEASUREMENT_BUFFER_HELPER2(basename, measname, element)          basename ## _measurement_ ## measname ## _ ## element ## _buffer
+#define KALMAN_MEASUREMENT_BUFFER_HELPER(basename, measname, element)           KALMAN_MEASUREMENT_BUFFER_HELPER2(basename, measname, element)
+#define KALMAN_MEASUREMENT_BUFFER_NAME(element)                                 KALMAN_MEASUREMENT_BUFFER_HELPER(KALMAN_FILTER_BASENAME, KALMAN_MEASUREMENT_NAME, element)
 
 /************************************************************************/
 /* Construct Kalman filter measurement buffers                          */
@@ -304,14 +305,20 @@ STATIC_INLINE kalman_measurement_t* KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
 #undef KALMAN_MEASUREMENT_NAME
 #undef KALMAN_NUM_MEASUREMENTS
 
+#undef KALMAN_MEASUREMENT_BASENAME_HELPER2
 #undef KALMAN_MEASUREMENT_BASENAME_HELPER
 #undef KALMAN_MEASUREMENT_BASENAME
 
-#undef KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER2
-#undef KALMAN_MEASUREMENT_FUNCTION_NAME_HELPER
+#undef KALMAN_MEASUREMENT_FUNCTION_HELPER2
+#undef KALMAN_MEASUREMENT_FUNCTION_HELPER
 #undef KALMAN_MEASUREMENT_FUNCTION_NAME
 
 #undef KALMAN_MEASUREMENT_BUFFER_NAME
+#undef KALMAN_MEASUREMENT_BUFFER_HELPER
+#undef KALMAN_MEASUREMENT_BUFFER_HELPER2
+
+#undef KALMAN_MEASUREMENT_STRUCT_HELPER2
+#undef KALMAN_MEASUREMENT_STRUCT_HELPER
 
 #undef __KALMAN_BUFFER_H
 #undef __KALMAN_BUFFER_R

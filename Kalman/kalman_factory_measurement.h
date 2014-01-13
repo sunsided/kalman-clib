@@ -282,7 +282,7 @@ static kalman_measurement_t KALMAN_MEASUREMENT_BASENAME;
 * \brief Initializes the Kalman Filter measurement
 * \return Pointer to the measurement.
 */
-STATIC_INLINE kalman_measurement_t* KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
+static kalman_measurement_t* KALMAN_MEASUREMENT_FUNCTION_NAME(init)()
 {
     int i;
     for (i = 0; i < __KALMAN_z_ROWS * __KALMAN_z_COLS; ++i) { __KALMAN_BUFFER_z[i] = 0; }

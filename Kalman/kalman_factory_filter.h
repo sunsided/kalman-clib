@@ -228,7 +228,7 @@ static kalman_t KALMAN_STRUCT_NAME;
 * \brief Initializes the Kalman Filter
 * \return Pointer to the filter.
 */
-STATIC_INLINE kalman_t* KALMAN_FUNCTION_NAME(init)()
+static kalman_t* KALMAN_FUNCTION_NAME(init)()
 {
     int i;
     for (i = 0; i < __KALMAN_x_ROWS * __KALMAN_x_COLS; ++i) { __KALMAN_BUFFER_x[i] = 0; }

@@ -97,7 +97,7 @@ void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_s
 * \brief Performs the time update / prediction step of only the state vector
 * \param[in] kf The Kalman Filter structure to predict with.
 */
-STATIC_INLINE void kalman_predict_x(kalman_t *kf) HOT PURE
+void kalman_predict_x(register kalman_t *const kf)
 {
     // matrices and vectors
     const matrix_t *RESTRICT const A = &kf->A;
@@ -117,13 +117,10 @@ STATIC_INLINE void kalman_predict_x(kalman_t *kf) HOT PURE
 }
 
 /*!
-* \brief Performs the time update / prediction step.
+* \brief Performs the time update / prediction step of only the state covariance matrix
 * \param[in] kf The Kalman Filter structure to predict with.
-* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
-*
-* This call assumes that the input covariance and variables are already set in the filter structure.
 */
-void kalman_predict(kalman_t *kf)
+void kalman_predict_Q(register kalman_t *const kf)
 {
     // matrices and vectors
     const matrix_t *RESTRICT const A = &kf->A;
@@ -134,13 +131,6 @@ void kalman_predict(kalman_t *kf)
     matrix_data_t *RESTRICT const aux = kf->temporary.aux;
     matrix_t *RESTRICT const P_temp = &kf->temporary.P;
     matrix_t *RESTRICT const BQ_temp = &kf->temporary.BQ;
-
-    /************************************************************************/
-    /* Predict next state using system dynamics                             */
-    /* x = A*x                                                              */
-    /************************************************************************/
-
-    kalman_predict_x(kf);
 
     /************************************************************************/
     /* Predict next covariance using system dynamics and input              */
@@ -160,13 +150,10 @@ void kalman_predict(kalman_t *kf)
 }
 
 /*!
-* \brief Performs the time update / prediction step.
+* \brief Performs the time update / prediction step of only the state covariance matrix
 * \param[in] kf The Kalman Filter structure to predict with.
-* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
-*
-* This call assumes that the input covariance and variables are already set in the filter structure.
 */
-void kalman_predict_tuned(kalman_t *kf, matrix_data_t lambda)
+void kalman_predict_Q_tuned(register kalman_t *const kf, matrix_data_t lambda)
 {
     // matrices and vectors
     const matrix_t *RESTRICT const A = &kf->A;
@@ -177,13 +164,6 @@ void kalman_predict_tuned(kalman_t *kf, matrix_data_t lambda)
     matrix_data_t *RESTRICT const aux = kf->temporary.aux;
     matrix_t *RESTRICT const P_temp = &kf->temporary.P;
     matrix_t *RESTRICT const BQ_temp = &kf->temporary.BQ;
-
-    /************************************************************************/
-    /* Predict next state using system dynamics                             */
-    /* x = A*x                                                              */
-    /************************************************************************/
-
-    kalman_predict_x(kf);
 
     /************************************************************************/
     /* Predict next covariance using system dynamics and input              */

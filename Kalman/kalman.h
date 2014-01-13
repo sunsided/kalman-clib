@@ -229,14 +229,31 @@ void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_s
                                    matrix_data_t *aux, matrix_data_t *S_inv, matrix_data_t *temp_HP, matrix_data_t *temp_PHt, matrix_data_t *temp_KHP);
 
 /*!
-* \brief Performs the time update / prediction step.
+* \brief Performs the time update / prediction step of only the state vector
 * \param[in] kf The Kalman Filter structure to predict with.
-* 
-* This call assumes that the input covariance and variables are already set in the filter structure.
 *
+* \see kalman_predict
 * \see kalman_predict_tuned
 */
-void kalman_predict(kalman_t *kf) HOT PURE;
+void kalman_predict_x(register kalman_t *const kf) HOT PURE;
+
+/*!
+* \brief Performs the time update / prediction step of only the state covariance matrix
+* \param[in] kf The Kalman Filter structure to predict with.
+*
+* \see kalman_predict
+* \see kalman_predict_Q_tuned
+*/
+void kalman_predict_Q(register kalman_t *const kf) HOT PURE;
+
+/*!
+* \brief Performs the time update / prediction step of only the state covariance matrix
+* \param[in] kf The Kalman Filter structure to predict with.
+*
+* \see kalman_predict_tuned
+* \see kalman_predict_Q
+*/
+void kalman_predict_Q_tuned(register kalman_t *const kf, matrix_data_t lambda) HOT PURE;
 
 /*!
 * \brief Performs the time update / prediction step.
@@ -245,9 +262,52 @@ void kalman_predict(kalman_t *kf) HOT PURE;
 *
 * This call assumes that the input covariance and variables are already set in the filter structure.
 *
-* \see kalman_predict
+* \see kalman_predict_x
+* \see kalman_predict_Q
 */
-void kalman_predict_tuned(kalman_t *kf, matrix_data_t lambda) HOT PURE;
+EXTERN_INLINE_KALMAN void kalman_predict(kalman_t *kf) HOT PURE
+{
+    /************************************************************************/
+    /* Predict next state using system dynamics                             */
+    /* x = A*x                                                              */
+    /************************************************************************/
+
+    kalman_predict_x(kf);
+
+    /************************************************************************/
+    /* Predict next covariance using system dynamics and input              */
+    /* P = A*P*A' + B*Q*B'                                                  */
+    /************************************************************************/
+
+    kalman_predict_Q(kf);
+}
+
+/*!
+* \brief Performs the time update / prediction step.
+* \param[in] kf The Kalman Filter structure to predict with.
+* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
+*
+* This call assumes that the input covariance and variables are already set in the filter structure.
+*
+* \see kalman_predict_x
+* \see kalman_predict_Q_tuned
+*/
+EXTERN_INLINE_KALMAN void kalman_predict_tuned(kalman_t *kf, matrix_data_t lambda) HOT PURE
+{
+    /************************************************************************/
+    /* Predict next state using system dynamics                             */
+    /* x = A*x                                                              */
+    /************************************************************************/
+
+    kalman_predict_x(kf);
+
+    /************************************************************************/
+    /* Predict next covariance using system dynamics and input              */
+    /* P = A*P*A' * 1/lambda^2 + B*Q*B'                                     */
+    /************************************************************************/
+
+    kalman_predict_Q_tuned(kf, lambda);
+}
 
 /*!
 * \brief Performs the measurement update step.

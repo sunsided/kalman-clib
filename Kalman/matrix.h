@@ -23,17 +23,17 @@ typedef struct {
     /**
     * \brief Number of rows
     */
-    const uint_fast8_t rows;
+    uint_fast8_t rows;
 
     /**
     * \brief Number of columns
     */
-    const uint_fast8_t cols;
+    uint_fast8_t cols;
 
     /**
     * \brief Pointer to the data array of size {\see rows} x {\see cols}.
     */
-    matrix_data_t *const data;
+    matrix_data_t *data;
 } matrix_t;
 
 /**
@@ -43,7 +43,7 @@ typedef struct {
 * \param[in] cols The number of columns
 * \param[in] buffer The data buffer (of size {\see rows} x {\see cols}).
 */
-void matrix_init(matrix_t *mat, const uint_fast8_t rows, const uint_fast8_t cols, matrix_data_t *buffer) PURE COLD NONNULL;
+void matrix_init(matrix_t *const mat, const uint_fast8_t rows, const uint_fast8_t cols, matrix_data_t *buffer) PURE COLD NONNULL;
 
 /**
 * \brief Inverts a lower triangular matrix.

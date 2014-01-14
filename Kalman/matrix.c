@@ -11,7 +11,7 @@
 * \param[in] cols The number of columns
 * \param[in] buffer The data buffer (of size {\see rows} x {\see cols}).
 */
-void matrix_init(matrix_t *const mat, const uint_fast8_t rows, const uint_fast8_t cols, matrix_data_t *buffer)
+void matrix_init(matrix_t * mat, uint_fast8_t rows, uint_fast8_t cols, matrix_data_t * buffer)
 {
     mat->cols = cols;
     mat->rows = rows;

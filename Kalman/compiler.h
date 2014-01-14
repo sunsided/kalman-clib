@@ -11,15 +11,6 @@
 #endif
 
 /**
-* \def NONNULL Marks a function as having only non-null arguments
-*/
-#ifdef __GNUC__
-#define NONNULL __attribute__ ((nonnull))
-#else
-#define NONNULL
-#endif
-
-/**
 * \def PURE Marks a function as pure, i.e. without global state
 */
 #ifdef __GNUC__
@@ -63,6 +54,6 @@
 /**
 * \def STATIC_INLINE Marks a function as to be inlined, but also statically defined
 */
-#define STATIC_INLINE extern INLINE
+#define STATIC_INLINE static INLINE
 
 #endif

@@ -43,7 +43,7 @@ typedef struct {
 * \param[in] cols The number of columns
 * \param[in] buffer The data buffer (of size {\see rows} x {\see cols}).
 */
-void matrix_init(matrix_t *const mat, const uint_fast8_t rows, const uint_fast8_t cols, matrix_data_t *buffer) PURE COLD NONNULL;
+void matrix_init(matrix_t * mat, uint_fast8_t rows, uint_fast8_t cols, matrix_data_t *buffer) PURE;
 
 /**
 * \brief Inverts a lower triangular matrix.
@@ -52,7 +52,7 @@ void matrix_init(matrix_t *const mat, const uint_fast8_t rows, const uint_fast8_
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRICT inverse) PURE HOT NONNULL;
+void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRICT inverse) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication such that {\ref c} = {\ref x} * {\ref b}
@@ -63,7 +63,7 @@ void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRIC
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, matrix_t *RESTRICT const c) PURE HOT NONNULL;
+void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, matrix_t *RESTRICT const c) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication such that {\ref c} = {\ref c} + {\ref x} * {\ref b}
@@ -74,7 +74,7 @@ void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RES
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_multadd_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, matrix_t *RESTRICT const c) PURE HOT NONNULL;
+void matrix_multadd_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT const x, matrix_t *RESTRICT const c) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication such that {\ref c} = {\ref a} * {\ref b}
@@ -85,7 +85,7 @@ void matrix_multadd_rowvector(const matrix_t *RESTRICT const a, const matrix_t *
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c, matrix_data_t *const baux) PURE HOT NONNULL;
+void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c, matrix_data_t *const baux) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication with transposed B such that {\ref c} = {\ref a} * {\ref b'}
@@ -95,7 +95,7 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c) PURE HOT NONNULL;
+void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication with transposed B and adds the result to {\ref c} such that {\ref c} = {\ref c} + {\ref a} * {\ref b'}
@@ -105,7 +105,7 @@ void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const 
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c) PURE HOT NONNULL;
+void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c) PURE HOT;
 
 /*!
 * \brief Performs a matrix multiplication with transposed B and scales the result such that {\ref c} = {\ref a} * {\ref b'} * {\ref scale}
@@ -221,7 +221,7 @@ PURE EXTERN_INLINE_MATRIX void matrix_get_row_copy(const matrix_t *const mat, co
 * \param[in] mat The matrix to copy
 * \param[in] target The matrix to copy to
 */
-PURE NONNULL EXTERN_INLINE_MATRIX void matrix_copy(const matrix_t *const mat, matrix_t *const target)
+PURE EXTERN_INLINE_MATRIX void matrix_copy(const matrix_t *const mat, matrix_t *const target)
 {
     register const uint_fast16_t count = mat->cols * mat->rows;
     register int_fast16_t index = 0;
@@ -242,7 +242,7 @@ PURE NONNULL EXTERN_INLINE_MATRIX void matrix_copy(const matrix_t *const mat, ma
 * \param[in] b The values to subtract
 * \param[in] c The output
 */
-PURE HOT NONNULL EXTERN_INLINE_MATRIX void matrix_sub(const matrix_t *const a, matrix_t *const b, const matrix_t *c)
+PURE HOT EXTERN_INLINE_MATRIX void matrix_sub(const matrix_t *const a, matrix_t *const b, const matrix_t *c)
 {
     register const uint_fast16_t count = a->cols * a->rows;
     register int_fast16_t index = 0;
@@ -263,7 +263,7 @@ PURE HOT NONNULL EXTERN_INLINE_MATRIX void matrix_sub(const matrix_t *const a, m
 * \param[in] a The matrix to subtract from
 * \param[in] b The values to subtract, also the output
 */
-PURE HOT NONNULL EXTERN_INLINE_MATRIX void matrix_sub_inplace_b(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT b)
+PURE HOT EXTERN_INLINE_MATRIX void matrix_sub_inplace_b(const matrix_t *RESTRICT const a, const matrix_t *RESTRICT b)
 {
     register const uint_fast16_t count = a->cols * a->rows;
     register int_fast16_t index = 0;
@@ -283,7 +283,7 @@ PURE HOT NONNULL EXTERN_INLINE_MATRIX void matrix_sub_inplace_b(const matrix_t *
 * \param[in] a The matrix to add to, also the output
 * \param[in] b The values to add
 */
-PURE HOT NONNULL EXTERN_INLINE_MATRIX void matrix_add_inplace(const matrix_t * a, const matrix_t *const b)
+PURE HOT EXTERN_INLINE_MATRIX void matrix_add_inplace(const matrix_t * a, const matrix_t *const b)
 {
     register const uint_fast16_t count = a->cols * a->rows;
     register int_fast16_t index = 0;

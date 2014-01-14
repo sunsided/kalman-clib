@@ -235,7 +235,7 @@ void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_s
 * \see kalman_predict
 * \see kalman_predict_tuned
 */
-void kalman_predict_x(register kalman_t *const kf) HOT PURE;
+void kalman_predict_x(register kalman_t *const kf) HOT;
 
 /*!
 * \brief Performs the time update / prediction step of only the state covariance matrix
@@ -244,7 +244,7 @@ void kalman_predict_x(register kalman_t *const kf) HOT PURE;
 * \see kalman_predict
 * \see kalman_predict_Q_tuned
 */
-void kalman_predict_Q(register kalman_t *const kf) HOT PURE;
+void kalman_predict_Q(register kalman_t *const kf) HOT;
 
 /*!
 * \brief Performs the time update / prediction step of only the state covariance matrix
@@ -253,7 +253,7 @@ void kalman_predict_Q(register kalman_t *const kf) HOT PURE;
 * \see kalman_predict_tuned
 * \see kalman_predict_Q
 */
-void kalman_predict_Q_tuned(register kalman_t *const kf, matrix_data_t lambda) HOT PURE;
+void kalman_predict_Q_tuned(register kalman_t *const kf, matrix_data_t lambda) HOT;
 
 /*!
 * \brief Performs the time update / prediction step.
@@ -292,7 +292,7 @@ EXTERN_INLINE_KALMAN void kalman_predict(kalman_t *kf)
 * \see kalman_predict_x
 * \see kalman_predict_Q_tuned
 */
-HOT PURE EXTERN_INLINE_KALMAN void kalman_predict_tuned(kalman_t *kf, matrix_data_t lambda)
+HOT EXTERN_INLINE_KALMAN void kalman_predict_tuned(kalman_t *kf, matrix_data_t lambda)
 {
     /************************************************************************/
     /* Predict next state using system dynamics                             */
@@ -313,7 +313,7 @@ HOT PURE EXTERN_INLINE_KALMAN void kalman_predict_tuned(kalman_t *kf, matrix_dat
 * \brief Performs the measurement update step.
 * \param[in] kf The Kalman Filter structure to correct.
 */
-void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm) HOT PURE;
+void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm) HOT;
 
 /*!
 * \brief Gets a pointer to the state vector x.

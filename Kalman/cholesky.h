@@ -11,6 +11,6 @@
 *
 * Kudos: https://code.google.com/p/efficient-java-matrix-library
 */
-int cholesky_decompose_lower(register const matrix_t *const mat) HOT PURE;
+int cholesky_decompose_lower(register const matrix_t *const mat) HOT;
 
 #endif

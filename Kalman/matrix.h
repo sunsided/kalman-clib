@@ -203,8 +203,8 @@ HOT EXTERN_INLINE_MATRIX void matrix_get_column_copy(const matrix_t *const mat, 
 */
 EXTERN_INLINE_MATRIX void matrix_get_row_copy(const matrix_t *const mat, const register uint_fast8_t row, register matrix_data_t *const row_data)
 {
-    register uint_fast8_t target_index = mat->cols;
-    register int_fast16_t source_index = (row + 1) * mat->cols;
+    register uint_fast8_t target_index = mat->cols - 1;
+    register int_fast16_t source_index = (row + 1) * mat->cols - 1;
 
     // fetch data
     row_data[target_index] = mat->data[source_index];

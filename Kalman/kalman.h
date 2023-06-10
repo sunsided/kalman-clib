@@ -1,5 +1,5 @@
-#ifndef _KALMAN_H_
-#define _KALMAN_H_
+#ifndef KALMAN_H_
+#define KALMAN_H_
 
 #include <stdint.h>
 #include "matrix.h"
@@ -33,7 +33,7 @@ typedef struct
     * \see A
     */
     matrix_t P;
-    
+
     /*!
     * \brief Input vector
     */
@@ -54,7 +54,7 @@ typedef struct
     /*!
     * \brief Temporary variables.
     */
-    struct 
+    struct
     {
         /*!
         * \brief Auxiliary array for matrix multiplication, needs to be MAX(num states, num inputs)
@@ -143,7 +143,7 @@ typedef struct
         * This auxiliary field MUST NOT be aliased with either temporary HP, KHP, HPt or S_inverted.
         */
         matrix_data_t *aux;
-        
+
         /*!
         * \brief S-Sized temporary matrix  (number of measurements x number of measurements)
         *
@@ -203,7 +203,7 @@ typedef struct
 * \param[in] temp_P The temporary matrix for P calculation ({\ref num_states} x {\ref num_states})
 * \param[in] temp_BQ The temporary matrix for BQ calculation ({\ref num_states} x {\ref num_inputs})
 */
-void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matrix_data_t *A, matrix_data_t *x, 
+void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_t num_inputs, matrix_data_t *A, matrix_data_t *x,
                               matrix_data_t *B, matrix_data_t *u, matrix_data_t *P, matrix_data_t *Q,
                               matrix_data_t *aux, matrix_data_t *predictedX, matrix_data_t *temp_P, matrix_data_t *temp_BQ) COLD;
 
@@ -224,7 +224,7 @@ void kalman_filter_initialize(kalman_t *kf, uint_fast8_t num_states, uint_fast8_
 * \param[in] temp_PHt The temporary matrix for PxH' ({\ref num_states} x {\ref num_measurements})
 * \param[in] temp_KHP The temporary matrix for KxHxP ({\ref num_states} x {\ref num_states})
 */
-void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_states, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R, 
+void kalman_measurement_initialize(kalman_measurement_t *kfm, uint_fast8_t num_states, uint_fast8_t num_measurements, matrix_data_t *H, matrix_data_t *z, matrix_data_t *R,
                                    matrix_data_t *y, matrix_data_t *S, matrix_data_t *K,
                                    matrix_data_t *aux, matrix_data_t *S_inv, matrix_data_t *temp_HP, matrix_data_t *temp_PHt, matrix_data_t *temp_KHP) COLD;
 

@@ -2,7 +2,7 @@
 #define _COMPILER_H_
 
 /**
-* \def RESTRICT Marks a restricted pointer 
+* \def RESTRICT Marks a restricted pointer
 */
 #ifdef __GNUC__
 #define RESTRICT __restrict__
@@ -41,9 +41,9 @@
 * \def INLINE Marks a function as to be inlined
 */
 #ifdef _MSC_VER
-#define INLINE __inline
+#define INLINE
 #else
-#define INLINE inline
+#define INLINE
 #endif
 
 /**

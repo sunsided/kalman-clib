@@ -3,7 +3,8 @@
 
 #include "cholesky.h"
 
-#define EXTERN_INLINE_KALMAN INLINE
+#define EXTERN_INLINE_MATRIX static INLINE
+#define EXTERN_INLINE_KALMAN static INLINE
 #include "kalman.h"
 
 /*!
@@ -218,7 +219,7 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     // S = H*P*H' + R
     matrix_mult(H, P, temp_HP, aux);            // temp = H*P
     matrix_mult_transb(temp_HP, H, S);          // S = temp*H'
-    matrix_add_inplace(S, &kfm->R);             // S += R 
+    matrix_add_inplace(S, &kfm->R);             // S += R
 
     /************************************************************************/
     /* Calculate Kalman gain                                                */
@@ -237,7 +238,7 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     /* x = x + K*y                                                          */
     /************************************************************************/
 
-    // x = x + K*y 
+    // x = x + K*y
     matrix_multadd_rowvector(K, y, x);
 
     /************************************************************************/
@@ -249,5 +250,5 @@ void kalman_correct(kalman_t *kf, kalman_measurement_t *kfm)
     // P = P - K*(H*P)
     matrix_mult(H, P, temp_HP, aux);            // temp_HP = H*P
     matrix_mult(K, temp_HP, temp_KHP, aux);     // temp_KHP = K*temp_HP
-    matrix_sub(P, temp_KHP, P);                 // P -= temp_KHP 
+    matrix_sub(P, temp_KHP, P);                 // P -= temp_KHP
 }

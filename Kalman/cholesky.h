@@ -1,5 +1,5 @@
-#ifndef _CHOLESKY_H_
-#define _CHOLESKY_H_
+#ifndef CHOLESKY_H_
+#define CHOLESKY_H_
 
 #include "compiler.h"
 #include "matrix.h"

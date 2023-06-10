@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <assert.h>
 
-#define EXTERN_INLINE_MATRIX INLINE
+#define EXTERN_INLINE_MATRIX static INLINE
 #include "matrix.h"
 
 /**
@@ -33,16 +33,16 @@ void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRIC
     matrix_data_t *a = inverse->data;
 
     // TODO reorder these operations to avoid cache misses
-    
+
     // inverts the lower triangular system and saves the result
     // in the upper triangle to minimize cache misses
-    for(i =0; i < n; ++i ) 
+    for(i =0; i < n; ++i )
     {
         const matrix_data_t el_ii = t[i*n+i];
-        for(j = 0; j <= i; ++j ) 
+        for(j = 0; j <= i; ++j )
         {
             matrix_data_t sum = (i==j) ? (matrix_data_t)1.0 : (matrix_data_t)0;
-            for(k=i-1; k >=j; --k ) 
+            for(k=i-1; k >=j; --k )
             {
                 sum -= t[i*n+k]*a[j*n+k];
             }
@@ -51,13 +51,13 @@ void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRIC
     }
     // solve the system and handle the previous solution being in the upper triangle
     // takes advantage of symmetry
-    for(i=n-1; i>=0; --i ) 
+    for(i=n-1; i>=0; --i )
     {
         const matrix_data_t el_ii = t[i*n+i];
-        for(j = 0; j <= i; ++j ) 
+        for(j = 0; j <= i; ++j )
         {
             matrix_data_t sum = (i<j) ? 0 : a[j*n+i];
-            for(k=i+1; k<n; ++k) 
+            for(k=i+1; k<n; ++k)
             {
                 sum -= t[k*n+i]*a[j*n+k];
             }
@@ -82,7 +82,7 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
     const uint_fast8_t ccols = c->cols;
     const uint_fast8_t brows = b->rows;
     const uint_fast8_t arows = a->rows;
-    
+
     matrix_data_t *RESTRICT const adata = a->data;
     matrix_data_t *RESTRICT const cdata = c->data;
 
@@ -91,14 +91,14 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
     assert(b != (matrix_t*)0);
     assert(c != (matrix_t*)0);
     assert(baux != (matrix_data_t*)0);
-    
+
     // test dimensions of a and b
     assert(a->cols == b->rows);
-    
+
     // test dimension of c
     assert(a->rows == c->rows);
     assert(b->cols == c->cols);
-    
+
     //for (j = 0; j < bcols; ++j)
     for (j = bcols-1; j >= 0; --j)
     {
@@ -142,16 +142,16 @@ void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const 
     uint_fast16_t cIndex = 0;
     uint_fast16_t aIndexStart = 0;
 
-    for (xA = 0; xA < arows; ++xA) 
+    for (xA = 0; xA < arows; ++xA)
     {
         end = aIndexStart + bcols;
         indexB = 0;
-        for (xB = 0; xB < brows; ++xB) 
+        for (xB = 0; xB < brows; ++xB)
         {
             indexA = aIndexStart;
             matrix_data_t total = 0;
 
-            while (indexA < end) 
+            while (indexA < end)
             {
                 total += adata[indexA++] * bdata[indexB++];
             }
@@ -272,11 +272,11 @@ void matrix_mult_rowvector(const matrix_t *RESTRICT const a, const matrix_t *RES
     uint_fast16_t cIndex = 0;
     matrix_data_t b0 = xdata[0];
 
-    for (i = 0; i < arows; ++i) 
+    for (i = 0; i < arows; ++i)
     {
         matrix_data_t total = adata[indexA++] * b0;
 
-        for (j = 1; j < acols; ++j) 
+        for (j = 1; j < acols; ++j)
         {
             total += adata[indexA++] * xdata[j];
         }

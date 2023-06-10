@@ -14,6 +14,9 @@
 * The initial estimation of the gravity constant is set to 6 m/s^2.
 */
 
+#define EXTERN_INLINE_MATRIX static INLINE
+#define EXTERN_INLINE_KALMAN static INLINE
+
 #include <assert.h>
 #include "kalman_example_gravity.h"
 
@@ -54,7 +57,7 @@ static void kalman_gravity_init()
     /* set state transition                                                 */
     /************************************************************************/
     matrix_t *A = kalman_get_state_transition(kf);
-    
+
     // set time constant
     const matrix_data_t T = 1;
 
@@ -62,7 +65,7 @@ static void kalman_gravity_init()
     matrix_set(A, 0, 0, 1);   // 1
     matrix_set(A, 0, 1, T);   // T
     matrix_set(A, 0, 2, (matrix_data_t)0.5*T*T); // 0.5 * T^2
-    
+
     // transition of x to v
     matrix_set(A, 1, 0, 0);   // 0
     matrix_set(A, 1, 1, 1);   // 1
@@ -92,7 +95,7 @@ static void kalman_gravity_init()
     /************************************************************************/
     matrix_t *H = kalman_get_measurement_transformation(kfm);
 
-    matrix_set(H, 0, 0, 1);     // z = 1*s 
+    matrix_set(H, 0, 0, 1);     // z = 1*s
     matrix_set(H, 0, 1, 0);     //   + 0*v
     matrix_set(H, 0, 2, 0);     //   + 0*g
 
@@ -108,7 +111,7 @@ static void kalman_gravity_init()
 //
 // MATLAB source
 // -------------
-// s = s + v*T + g*0.5*T^2; 
+// s = s + v*T + g*0.5*T^2;
 // v = v + g*T;
 #define MEAS_COUNT (15)
 static matrix_data_t real_distance[MEAS_COUNT] = {
@@ -164,7 +167,7 @@ void kalman_gravity_demo()
 
     matrix_t *x = kalman_get_state_vector(kf);
     matrix_t *z = kalman_get_measurement_vector(kfm);
-    
+
     // filter!
     for (int i = 0; i < MEAS_COUNT; ++i)
     {

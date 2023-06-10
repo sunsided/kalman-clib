@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <assert.h>
 
+#define EXTERN_INLINE_MATRIX static INLINE
+
 #include "matrix.h"
 #include "cholesky.h"
 #include "matrix_unittests.h"

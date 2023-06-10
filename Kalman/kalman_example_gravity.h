@@ -1,5 +1,5 @@
-#ifndef _KALMAN_EXAMPLE_GRAVITY_H_
-#define _KALMAN_EXAMPLE_GRAVITY_H_
+#ifndef KALMAN_EXAMPLE_GRAVITY_H_
+#define KALMAN_EXAMPLE_GRAVITY_H_
 
 /*!
 * \brief Runs the gravity Kalman filter.

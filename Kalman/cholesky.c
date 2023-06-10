@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <stdint.h>
 #include <math.h>
+
+#define EXTERN_INLINE_MATRIX static INLINE
 #include "matrix.h"
 
 /**
@@ -23,9 +25,9 @@ int cholesky_decompose_lower(register const matrix_t *const mat)
     assert(mat->rows == mat->cols);
     assert(mat->rows > 0);
 
-    for( i = 0; i < n; ++i ) 
+    for( i = 0; i < n; ++i )
     {
-        for( j = i; j < n; ++j ) 
+        for( j = i; j < n; ++j )
         {
             matrix_data_t sum = t[i*n+j];
 
@@ -33,13 +35,13 @@ int cholesky_decompose_lower(register const matrix_t *const mat)
             uint_fast16_t jEl = j*n;
             uint_fast16_t end = iEl+i;
             // k = 0:i-1
-            for( ; iEl<end; ++iEl,++jEl ) 
+            for( ; iEl<end; ++iEl,++jEl )
             {
                 // sum -= el[i*n+k]*el[j*n+k];
                 sum -= t[iEl]* t[jEl];
             }
 
-            if( i == j ) 
+            if( i == j )
             {
                 // is it positive-definite?
                 if( sum <= 0.0 ) return 1;
@@ -47,8 +49,8 @@ int cholesky_decompose_lower(register const matrix_t *const mat)
                 el_ii = (matrix_data_t)sqrt(sum);
                 t[i*n+i] = el_ii;
                 div_el_ii = (matrix_data_t)1.0/el_ii;
-            } 
-            else 
+            }
+            else
             {
                 t[j*n+i] = sum*div_el_ii;
             }
@@ -56,9 +58,9 @@ int cholesky_decompose_lower(register const matrix_t *const mat)
     }
 
     // zero the top right corner.
-    for( i = 0; i < n; ++i ) 
+    for( i = 0; i < n; ++i )
     {
-        for( j = i+1; j < n; ++j ) 
+        for( j = i+1; j < n; ++j )
         {
             t[i*n+j] = 0.0;
         }

@@ -2,7 +2,7 @@
 * \brief Initializes a named Kalman filter structure.
 *
 * This include requires the three defines {\ref KALMAN_NAME}, {\ref KALMAN_NUM_STATES} and
-* {\ref KALMAN_NUM_INPUTS} to be set to the base name of the Kalman Filter and to the number 
+* {\ref KALMAN_NUM_INPUTS} to be set to the base name of the Kalman Filter and to the number
 * of states and inputs respectively.
 *
 * It then will instantiate the buffers required for A, P, x as well as B, Q and u if the number
@@ -234,14 +234,14 @@ static kalman_t* KALMAN_FUNCTION_NAME(init)()
     for (i = 0; i < __KALMAN_x_ROWS * __KALMAN_x_COLS; ++i) { __KALMAN_BUFFER_x[i] = 0; }
     for (i = 0; i < __KALMAN_A_ROWS * __KALMAN_A_COLS; ++i) { __KALMAN_BUFFER_A[i] = 0; }
     for (i = 0; i < __KALMAN_P_ROWS * __KALMAN_P_COLS; ++i) { __KALMAN_BUFFER_P[i] = 0; }
-    for (i = 0; i < __KALMAN_u_ROWS * __KALMAN_x_COLS; ++i) { __KALMAN_BUFFER_x[i] = 0; }
 
 #if KALMAN_NUM_INPUTS > 0
     for (i = 0; i < __KALMAN_B_ROWS * __KALMAN_B_COLS; ++i) { __KALMAN_BUFFER_B[i] = 0; }
     for (i = 0; i < __KALMAN_Q_ROWS * __KALMAN_Q_COLS; ++i) { __KALMAN_BUFFER_Q[i] = 0; }
+    for (i = 0; i < __KALMAN_u_ROWS * __KALMAN_x_COLS; ++i) { __KALMAN_BUFFER_u[i] = 0; }
 #endif
 
-    kalman_filter_initialize(&KALMAN_STRUCT_NAME, KALMAN_NUM_STATES, KALMAN_NUM_INPUTS, __KALMAN_BUFFER_A, __KALMAN_BUFFER_x, 
+    kalman_filter_initialize(&KALMAN_STRUCT_NAME, KALMAN_NUM_STATES, KALMAN_NUM_INPUTS, __KALMAN_BUFFER_A, __KALMAN_BUFFER_x,
                             __KALMAN_BUFFER_B, __KALMAN_BUFFER_u, __KALMAN_BUFFER_P, __KALMAN_BUFFER_Q,
                             __KALMAN_BUFFER_aux, __KALMAN_BUFFER_aux, __KALMAN_BUFFER_tempPBQ, __KALMAN_BUFFER_tempPBQ);
     return &KALMAN_STRUCT_NAME;

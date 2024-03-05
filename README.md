@@ -1,6 +1,6 @@
 # Kalman Filter C Implementation #
 
-Microcontroller targeted naive Kalman filter implementation in pure C using code ported from the [Efficient Java Matrix Library](https://code.google.com/p/efficient-java-matrix-library).
+Microcontroller targeted naive Kalman filter implementation in pure C using code ported from the [Efficient Java Matrix Library](https://code.google.com/p/efficient-java-matrix-library).  
 A 🦀 Rust port is available at [sunsided/minikalman-rs](https://github.com/sunsided/minikalman-rs).
 
 ### License

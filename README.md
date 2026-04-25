@@ -25,13 +25,38 @@ Drop the files directly into your own build — no external dependencies, no lib
 2. Add the `include/` directory to your compiler's include path (`-I include`).
 3. Link against the math library (`-lm`).
 
+The library uses a **preprocessor-based factory** to generate filter and measurement structs. Before including the factory headers you must define a few macros:
+
 ```c
+/* Control inline semantics: use static in a single translation unit */
+#define EXTERN_INLINE_MATRIX static inline
+#define EXTERN_INLINE_KALMAN static inline
+
 #include <kalman.h>
+
+/* Define a filter named "gravity" with 3 states and 0 inputs */
+#define KALMAN_NAME gravity
+#define KALMAN_NUM_STATES 3
+#define KALMAN_NUM_INPUTS 0
 #include <kalman_factory_filter.h>
 
-/* Use the generated filter struct and init function */
-kalman_filter_gravity_init();
+/* Define a measurement named "position" with 1 output */
+#define KALMAN_MEASUREMENT_NAME position
+#define KALMAN_NUM_MEASUREMENTS 1
+#include <kalman_factory_measurement.h>
+
+/* Undef all KALMAN_* macros so you can define another filter */
+#include <kalman_factory_cleanup.h>
+
+/* Now use the generated names */
+kalman_t *kf = kalman_filter_gravity_init();
+kalman_measurement_t *kfm = kalman_filter_gravity_measurement_position_init();
+
+kalman_predict(kf);
+kalman_correct(kf, kfm);
 ```
+
+To define multiple filters, repeat the `KALMAN_NAME` / `kalman_factory_filter.h` / `kalman_factory_cleanup.h` cycle with different names.
 
 ### CMake (installable)
 

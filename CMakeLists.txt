@@ -25,6 +25,7 @@ target_include_directories(kalman_clib PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_compile_features(kalman_clib PRIVATE c_std_11)
+target_link_libraries(kalman_clib PUBLIC m)
 
 set_target_properties(kalman_clib PROPERTIES
         SPDX_LICENSE_IDENTIFIER "MIT"

@@ -53,22 +53,24 @@ jobs:
           cmake_minimum_required(VERSION 3.25)
           project(kalman_consumer_test C)
           find_package(kalman_clib 1.0 REQUIRED)
-          add_library(consumer_check OBJECT main.c)
+          add_executable(consumer_check main.c)
           target_link_libraries(consumer_check PRIVATE kalman_clib::kalman_clib)
           EOF
           cat > consumer/main.c <<'EOF'
-          #define EXTERN_INLINE_MATRIX extern inline
-          #define EXTERN_INLINE_KALMAN extern inline
+          #define EXTERN_INLINE_MATRIX static inline
+          #define EXTERN_INLINE_KALMAN static inline
           #include <kalman.h>
 
-          void check(void) {
+          int main(void) {
               (void)sizeof(kalman_t);
               (void)sizeof(kalman_measurement_t);
               (void)sizeof(matrix_t);
+              return 0;
           }
           EOF
 
-      - name: Build consumer (find_package smoke test)
+      - name: Build and run consumer (find_package smoke test)
         run: |
           cmake -B consumer/build -S consumer -DCMAKE_PREFIX_PATH="${{ github.workspace }}/install"
           cmake --build consumer/build
+          ./consumer/build/consumer_check

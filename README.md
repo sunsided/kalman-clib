@@ -72,7 +72,7 @@ Downstream `CMakeLists.txt`:
 
 ```cmake
 find_package(kalman_clib 1.0 REQUIRED)
-target_link_libraries(your_target PRIVATE kalman_clib::kalman_clib m)
+target_link_libraries(your_target PRIVATE kalman_clib::kalman_clib)
 ```
 
 **Options:**
@@ -81,8 +81,8 @@ target_link_libraries(your_target PRIVATE kalman_clib::kalman_clib m)
 |---|---|---|
 | `KALMAN_CLIB_BUILD_EXAMPLES` | `ON` | Build example programs |
 
-License & Origin
+## License & Origin
 
 - SPDX-License-Identifier: `MIT`
 - Upstream: <https://github.com/sunsided/kalman-clib>
-- Copyright (c) 2014-2024 Markus Mayer — see [LICENSE.md](LICENSE.md).
+- Copyright (c) 2014-2024 Markus Mayer - see [LICENSE.md](LICENSE.md).

@@ -10,10 +10,12 @@
 /**
 * \brief Main entry point
 */
-void main()
+int main(void)
 {
     matrix_unittests();
- 
+
     kalman_gravity_demo();
     kalman_gravity_demo_lambda();
+
+    return 0;
 }

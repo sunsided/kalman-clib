@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure (examples ON, Debug)
+        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Run example
+        run: ./build/example
+
+      - name: Configure (library only, examples OFF)
+        run: cmake -B build-lib-only -S . -DKALMAN_CLIB_BUILD_EXAMPLES=OFF
+
+      - name: Build library only
+        run: cmake --build build-lib-only
+
+      - name: Install to scratch prefix
+        run: cmake --install build --prefix "${{ github.workspace }}/install"
+
+      - name: Verify install tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f install/lib/libkalman_clib.a
+          test -f install/include/kalman.h
+          test -f install/include/matrix.h
+          test -f install/lib/cmake/kalman_clib/kalman_clibConfig.cmake
+          test -f install/lib/cmake/kalman_clib/kalman_clibConfigVersion.cmake
+          test -f install/lib/cmake/kalman_clib/kalman_clibTargets.cmake
+          test -f install/share/doc/kalman_clib/LICENSE.md
+
+      - name: Set up consumer smoke test
+        shell: bash
+        run: |
+          mkdir -p consumer
+          cat > consumer/CMakeLists.txt <<'EOF'
+          cmake_minimum_required(VERSION 3.25)
+          project(kalman_consumer_test C)
+          find_package(kalman_clib 1.0 REQUIRED)
+          add_executable(consumer_check main.c)
+          target_link_libraries(consumer_check PRIVATE kalman_clib::kalman_clib)
+          EOF
+          cat > consumer/main.c <<'EOF'
+          #define EXTERN_INLINE_MATRIX static inline
+          #define EXTERN_INLINE_KALMAN static inline
+          #include <kalman.h>
+
+          int main(void) {
+              (void)sizeof(kalman_t);
+              (void)sizeof(kalman_measurement_t);
+              (void)sizeof(matrix_t);
+              return 0;
+          }
+          EOF
+
+      - name: Build and run consumer (find_package smoke test)
+        run: |
+          cmake -B consumer/build -S consumer -DCMAKE_PREFIX_PATH="${{ github.workspace }}/install"
+          cmake --build consumer/build
+          ./consumer/build/consumer_check

@@ -264,7 +264,6 @@ void kalman_predict_Q_tuned(register kalman_t *const kf, matrix_data_t lambda) H
 /*!
 * \brief Performs the time update / prediction step.
 * \param[in] kf The Kalman Filter structure to predict with.
-* \param[in] lambda Lambda factor (\c 0 < {\ref lambda} <= \c 1) to forcibly reduce prediction certainty. Smaller values mean larger uncertainty.
 *
 * This call assumes that the input covariance and variables are already set in the filter structure.
 *

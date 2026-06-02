@@ -84,6 +84,16 @@ void matrix_invert_lower(const matrix_t *RESTRICT const lower, matrix_t *RESTRIC
 void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c, matrix_data_t *const baux)
 {
     register int_fast16_t i, j, k;
+
+    // assert pointer validity (before any dereference)
+    assert(a != (matrix_t*)0);
+    assert(b != (matrix_t*)0);
+    assert(c != (matrix_t*)0);
+    assert(baux != (matrix_data_t*)0);
+    assert(a->data != (matrix_data_t*)0);
+    assert(b->data != (matrix_data_t*)0);
+    assert(c->data != (matrix_data_t*)0);
+
     const uint_fast8_t bcols = b->cols;
     const uint_fast8_t ccols = c->cols;
     const uint_fast8_t brows = b->rows;
@@ -91,12 +101,6 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
 
     matrix_data_t *RESTRICT const adata = a->data;
     matrix_data_t *RESTRICT const cdata = c->data;
-
-    // assert pointer validity
-    assert(a != (matrix_t*)0);
-    assert(b != (matrix_t*)0);
-    assert(c != (matrix_t*)0);
-    assert(baux != (matrix_data_t*)0);
 
     // test dimensions of a and b
     assert(a->cols == b->rows);
@@ -180,6 +184,15 @@ void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const 
 void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c)
 {
     register uint_fast16_t xA, xB, indexA, indexB, end;
+
+    // assert pointer validity (before any dereference)
+    assert(a != (matrix_t*)0);
+    assert(b != (matrix_t*)0);
+    assert(c != (matrix_t*)0);
+    assert(a->data != (matrix_data_t*)0);
+    assert(b->data != (matrix_data_t*)0);
+    assert(c->data != (matrix_data_t*)0);
+
     const uint_fast8_t bcols = b->cols;
     const uint_fast8_t brows = b->rows;
     const uint_fast8_t arows = a->rows;

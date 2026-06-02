@@ -109,8 +109,10 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
     assert(a->rows == c->rows);
     assert(b->cols == c->cols);
 
-    //for (j = 0; j < bcols; ++j)
-    for (j = bcols-1; j >= 0; --j)
+    // Iterate columns in reverse. The `j-- > 0` form is well-defined for bcols == 0;
+    // `j = bcols - 1` could underflow to a large value if uint_fast8_t promotes to an
+    // unsigned type, since j is a (wider) signed integer.
+    for (j = bcols; j-- > 0; )
     {
         // create a copy of the column in B to avoid cache issues
         matrix_get_column_copy(b, j, baux);

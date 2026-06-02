@@ -5,6 +5,7 @@
 // Licensed under the MIT License. See LICENSE.md in the project root for details.
 
 #include <assert.h>
+#include <math.h>
 #include <stdint.h>
 
 #define EXTERN_INLINE_MATRIX static INLINE
@@ -12,6 +13,21 @@
 
 #include "kalman.h"
 #include "kalman_unittests.h"
+
+/*!
+* \brief Asserts that two matrix values are equal within a small tolerance.
+*
+* The expected values in these tests are exact integers reached by multiply-add
+* chains, so they are representable in the default float matrix_data_t and would
+* even pass an exact `==`. We compare with a tolerance instead so the tests stay
+* correct if matrix_data_t becomes a less exact type, or if a translation unit is
+* built with -ffast-math (which may reassociate the floating-point operations).
+*/
+static void expect_close(matrix_data_t actual, matrix_data_t expected)
+{
+    const double tol = 1e-3;
+    assert(fabs((double)actual - (double)expected) <= tol);
+}
 
 /*!
 * \brief Regression test for the covariance prediction with zero inputs.
@@ -53,10 +69,10 @@ static void test_predict_zero_inputs(void)
 
     // Expected P' = A*P*A' (no B*Q*B' contribution). With P = I this is A*A':
     //   [[1*1+2*2, 1*0+2*1], [0*1+1*2, 0*0+1*1]] = [[5, 2], [2, 1]]
-    assert(P[0] == (matrix_data_t)5);
-    assert(P[1] == (matrix_data_t)2);
-    assert(P[2] == (matrix_data_t)2);
-    assert(P[3] == (matrix_data_t)1);
+    expect_close(P[0], 5);
+    expect_close(P[1], 2);
+    expect_close(P[2], 2);
+    expect_close(P[3], 1);
 }
 
 /*!
@@ -89,7 +105,7 @@ static void test_predict_with_inputs(void)
     kalman_predict_Q(&kf);
 
     // Expected P' = A*P*A' + B*Q*B' = 1*3*1 + 2*5*2 = 3 + 20 = 23
-    assert(P[0] == (matrix_data_t)23);
+    expect_close(P[0], 23);
 }
 
 /*!
@@ -111,10 +127,10 @@ static void test_matrix_sub_aliased(void)
     // output (c) aliases input (a), as in kalman_correct
     matrix_sub(&p, &k, &p);
 
-    assert(pd[0] == (matrix_data_t)9);
-    assert(pd[1] == (matrix_data_t)18);
-    assert(pd[2] == (matrix_data_t)27);
-    assert(pd[3] == (matrix_data_t)36);
+    expect_close(pd[0], 9);
+    expect_close(pd[1], 18);
+    expect_close(pd[2], 27);
+    expect_close(pd[3], 36);
 }
 
 /*!

@@ -140,6 +140,15 @@ void matrix_mult(const matrix_t *const a, const matrix_t *const b, const matrix_
 void matrix_mult_transb(const matrix_t *const a, const matrix_t *const b, const matrix_t *RESTRICT c)
 {
     register uint_fast16_t xA, xB, indexA, indexB, end;
+
+    // assert pointer validity (before any dereference)
+    assert(a != (matrix_t*)0);
+    assert(b != (matrix_t*)0);
+    assert(c != (matrix_t*)0);
+    assert(a->data != (matrix_data_t*)0);
+    assert(b->data != (matrix_data_t*)0);
+    assert(c->data != (matrix_data_t*)0);
+
     const uint_fast8_t bcols = b->cols;
     const uint_fast8_t brows = b->rows;
     const uint_fast8_t arows = a->rows;
@@ -237,6 +246,15 @@ void matrix_multadd_transb(const matrix_t *const a, const matrix_t *const b, con
 void matrix_multscale_transb(const matrix_t *const a, const matrix_t *const b, register const matrix_data_t scale, const matrix_t *RESTRICT c)
 {
     register uint_fast16_t xA, xB, indexA, indexB, end;
+
+    // assert pointer validity (before any dereference)
+    assert(a != (matrix_t*)0);
+    assert(b != (matrix_t*)0);
+    assert(c != (matrix_t*)0);
+    assert(a->data != (matrix_data_t*)0);
+    assert(b->data != (matrix_data_t*)0);
+    assert(c->data != (matrix_data_t*)0);
+
     const uint_fast8_t bcols = b->cols;
     const uint_fast8_t brows = b->rows;
     const uint_fast8_t arows = a->rows;

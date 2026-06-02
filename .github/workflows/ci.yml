@@ -21,8 +21,20 @@ jobs:
       - name: Build
         run: cmake --build build
 
-      - name: Run example
-        run: ./build/example
+      - name: Run tests (Debug)
+        run: ctest --test-dir build --output-on-failure
+
+      # Re-run the suite optimized but with assertions still enabled (Debug type so
+      # NDEBUG is not defined). This exercises the in-place matrix_sub aliasing path
+      # under -O2, where a stray `restrict` could otherwise miscompile.
+      - name: Configure (optimized, assertions on)
+        run: cmake -B build-opt -S . -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS="-O2"
+
+      - name: Build (optimized)
+        run: cmake --build build-opt
+
+      - name: Run tests (optimized)
+        run: ctest --test-dir build-opt --output-on-failure
 
       - name: Configure (library only, examples OFF)
         run: cmake -B build-lib-only -S . -DKALMAN_CLIB_BUILD_EXAMPLES=OFF

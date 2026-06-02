@@ -39,6 +39,7 @@ if(KALMAN_CLIB_BUILD_EXAMPLES)
     add_executable(example
             src/kalman_example.c
             src/kalman_example_gravity.c
+            src/kalman_unittests.c
             src/main.c
             src/matrix_unittests.c)
     target_include_directories(example PRIVATE include src)
@@ -49,6 +50,10 @@ if(KALMAN_CLIB_BUILD_EXAMPLES)
             SPDX_LICENSE_IDENTIFIER "MIT"
             SPDX_COPYRIGHT_TEXT     "Copyright (c) 2014-2024 Markus Mayer"
             PROJECT_URL             "https://github.com/sunsided/kalman-clib")
+
+    # The example binary doubles as the test suite (asserts must stay enabled).
+    enable_testing()
+    add_test(NAME kalman_clib_tests COMMAND example)
 endif()
 
 # ── Install ──────────────────────────────────────────────────────────────────

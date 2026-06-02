@@ -149,7 +149,7 @@ void kalman_predict_Q(register kalman_t *const kf)
     matrix_mult_transb(P_temp, A, P);               // P = temp*A'
 
     // P = P + B*Q*B'
-    if (kf->B.rows > 0)
+    if (kf->B.cols > 0)
     {
         matrix_mult(B, &kf->Q, BQ_temp, aux);       // temp = B*Q
         matrix_multadd_transb(BQ_temp, B, P);       // P += temp*B'
@@ -185,7 +185,7 @@ void kalman_predict_Q_tuned(register kalman_t *const kf, matrix_data_t lambda)
     matrix_multscale_transb(P_temp, A, lambda, P);   // P = temp*A' * 1/(lambda^2)
 
     // P = P + B*Q*B'
-    if (kf->B.rows > 0)
+    if (kf->B.cols > 0)
     {
         matrix_mult(B, &kf->Q, BQ_temp, aux);       // temp = B*Q
         matrix_multadd_transb(BQ_temp, B, P);        // P += temp*B'

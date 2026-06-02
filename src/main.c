@@ -5,6 +5,7 @@
 // Licensed under the MIT License. See LICENSE.md in the project root for details.
 
 #include "matrix_unittests.h"
+#include "kalman_unittests.h"
 #include "kalman_example_gravity.h"
 
 /**
@@ -13,6 +14,7 @@
 int main(void)
 {
     matrix_unittests();
+    kalman_unittests();
 
     kalman_gravity_demo();
     kalman_gravity_demo_lambda();

@@ -247,13 +247,16 @@ EXTERN_INLINE_MATRIX void matrix_copy(const matrix_t *const mat, matrix_t *const
 * \param[in] a The matrix to subtract from
 * \param[in] b The values to subtract
 * \param[in] c The output
+*
+* The output {\ref c} may alias the input {\ref a} (in-place subtraction), as done
+* in kalman_correct's P = P - K*H*P. Hence {\ref a} must not be {\c restrict}-qualified.
 */
 HOT EXTERN_INLINE_MATRIX void matrix_sub(const matrix_t *const a, matrix_t *const b, const matrix_t *c)
 {
     register const uint_fast16_t count = a->cols * a->rows;
     register int_fast16_t index = 0;
 
-    matrix_data_t *RESTRICT const A = a->data;
+    matrix_data_t *const A = a->data;
     matrix_data_t *const B = b->data;
     matrix_data_t *C = c->data;
 

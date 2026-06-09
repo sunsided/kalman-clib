@@ -85,4 +85,4 @@ target_link_libraries(your_target PRIVATE kalman_clib::kalman_clib)
 
 - SPDX-License-Identifier: `MIT`
 - Upstream: <https://github.com/sunsided/kalman-clib>
-- Copyright (c) 2014-2024 Markus Mayer - see [LICENSE.md](LICENSE.md).
+- Copyright (c) 2014-2026 Markus Mayer - see [LICENSE.md](LICENSE.md).
